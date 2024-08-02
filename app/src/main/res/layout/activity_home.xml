@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/topLayout">
 
-        <EditText
+        <SearchView
             android:id="@+id/search"
             android:layout_width="0dp"
             android:layout_weight="0.6"
@@ -29,7 +29,6 @@
             android:background="@drawable/edittext_background"
             android:ems="10"
             android:drawableLeft="@drawable/search"
-            android:hint="Поиск еды"
             android:importantForAutofill="no"
             android:inputType="text"/>
 

@@ -12,7 +12,9 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.Toast
+import androidx.compose.runtime.Composable
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,8 +45,7 @@ class Home : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         val foodList = findViewById<RecyclerView>(R.id.upperList)
-        val editText: EditText = findViewById(R.id.search)
-        editText.clearFocus()
+        val editText: SearchView = findViewById(R.id.search)
         val positionList = mutableListOf<Product>()
         val fireDb = Firebase.firestore
         val auth = Firebase.auth
@@ -186,6 +187,10 @@ class Home : Activity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val search = findViewById<SearchView>(R.id.search)
+        
+
     }
 
     override fun onStart() {

@@ -48,6 +48,10 @@ class ProductAdapter(private val foods: List<Product>, private val context: Cont
             view.setOnClickListener {
                 listener?.onItemClick(id)
             }
+
+            toCartButton.setOnClickListener {
+                listenerCart?.addToCart(id, toCartButton, view.findViewById(R.id.toCart))
+            }
         }
     }
 
@@ -66,9 +70,9 @@ class ProductAdapter(private val foods: List<Product>, private val context: Cont
             holder.view1.visibility = View.GONE
             holder.view1.layoutParams = RecyclerView.LayoutParams(0, 0)
         }
-        holder.leftovers.text = "Осталось: ${product.leftovers} шт."
+        holder.leftovers.text = "Остаток: ${product.leftovers}"
         holder.name.text = product.name
-        holder.price.text = "Цена: ${product.price}〒"
+        holder.price.text = product.price.toString()
         holder.id = product.id
         val initImg =  product.image
 
