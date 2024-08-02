@@ -61,6 +61,8 @@ class DetailedActivityRestaurants : Activity() {
 
         restDesc.text = desc
         restName.text = restNameBundle
+        val more = findViewById<TextView>(R.id.more)
+        more.text = restNameBundle
 //        val logoID = resources.getIdentifier(logoImage, "drawable", packageName)
 //        restLogo.setImageResource(logoID)
 
