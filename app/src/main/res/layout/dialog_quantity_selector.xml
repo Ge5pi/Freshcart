@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:paddingBottom="8dp"
-        android:text="Select Quantity"
+        android:text="Выберите количество"
         android:textSize="18sp" />
 
     <LinearLayout
@@ -49,5 +49,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Add to Cart" />
+        android:text="Добавить в корзину" />
 </LinearLayout>

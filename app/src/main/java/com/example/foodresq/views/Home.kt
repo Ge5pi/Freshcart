@@ -9,9 +9,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
+import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.compose.runtime.Composable
@@ -41,12 +45,19 @@ class Home : Activity() {
         private const val TAG = "Home"
     }
 
+    private lateinit var foodList: RecyclerView
+    private lateinit var searchResultsList: RecyclerView
+    private lateinit var adapter1: ProductAdapter
+    private lateinit var searchResultsAdapter: ProductAdapter
+    private val positionList = mutableListOf<Product>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        val foodList = findViewById<RecyclerView>(R.id.upperList)
-        val editText: SearchView = findViewById(R.id.search)
-        val positionList = mutableListOf<Product>()
+
+        foodList = findViewById(R.id.upperList)
+        searchResultsList = findViewById(R.id.searchResultsList)
+        val searchResultsContainer = findViewById<View>(R.id.searchResultsContainer)
         val fireDb = Firebase.firestore
         val auth = Firebase.auth
 
@@ -56,9 +67,14 @@ class Home : Activity() {
             startActivity(intent)
         }
 
-        val adapter1 = ProductAdapter(positionList, this)
+        adapter1 = ProductAdapter(positionList, this)
+        searchResultsAdapter = ProductAdapter(positionList, this)
+
         foodList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         foodList.adapter = adapter1
+
+        searchResultsList.layoutManager = LinearLayoutManager(this)
+        searchResultsList.adapter = searchResultsAdapter
 
         fireDb.collection("positions").whereGreaterThan("id", -1)
             .orderBy("id", Query.Direction.ASCENDING).get()
@@ -75,30 +91,28 @@ class Home : Activity() {
                             }
 
                             for (document in documents) {
-//                                if ((document.getLong("leftovers")?.toInt() ?: 0) > 0) {
-                                    val id = document.getLong("id")?.toInt() ?: 0
-                                    val factId = document.id
-                                    val name = document.getString("name") ?: ""
-                                    val description = document.getString("description") ?: ""
-                                    val image = document.getString("ava") ?: ""
-                                    val price = document.getLong("price")?.toInt() ?: 0
-                                    val restId = document.getString("rest_id") ?: ""
-                                    val leftovers = document.getLong("leftovers")?.toInt() ?: 0
+                                val id = document.getLong("id")?.toInt() ?: 0
+                                val factId = document.id
+                                val name = document.getString("name") ?: ""
+                                val description = document.getString("description") ?: ""
+                                val image = document.getString("ava") ?: ""
+                                val price = document.getLong("price")?.toInt() ?: 0
+                                val restId = document.getString("rest_id") ?: ""
+                                val leftovers = document.getLong("leftovers")?.toInt() ?: 0
 
-                                    val restIdNumeric = restIdMap[restId] ?: continue
-                                    positionList.add(
-                                        Product(
-                                            id,
-                                            factId,
-                                            name,
-                                            description,
-                                            image,
-                                            price,
-                                            restIdNumeric,
-                                            leftovers
-                                        )
+                                val restIdNumeric = restIdMap[restId] ?: continue
+                                positionList.add(
+                                    Product(
+                                        id,
+                                        factId,
+                                        name,
+                                        description,
+                                        image,
+                                        price,
+                                        restIdNumeric,
+                                        leftovers
                                     )
-//                                }
+                                )
                                 adapter1.notifyDataSetChanged()
                             }
                         }
@@ -119,7 +133,6 @@ class Home : Activity() {
                     putExtra("restId", positionList[id].restId)
                 }
                 startActivity(intent)
-
             }
         })
 
@@ -188,10 +201,38 @@ class Home : Activity() {
             insets
         }
 
-        val search = findViewById<SearchView>(R.id.search)
-        
+        val searchView = findViewById<SearchView>(R.id.search)
 
-    }
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let { filterProducts(it) }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let { filterProducts(it) }
+                return false
+            }
+        })
+
+
+
+
+        val backButtonSearch = findViewById<ImageView>(R.id.backButtonSearch)
+        backButtonSearch.setOnClickListener {
+            searchView.clearFocus()
+        }
+
+        searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                setViewsEnabled(false)
+                showSearchResults(searchResultsContainer)
+            } else {
+                setViewsEnabled(true)
+                hideSearchResults(searchResultsContainer)
+            }
+        }
+        }
 
     override fun onStart() {
         super.onStart()
@@ -199,6 +240,35 @@ class Home : Activity() {
             recreate()
             isRecreate = false
         }
+    }
+    private fun setViewsEnabled(enabled: Boolean) {
+        findViewById<RecyclerView>(R.id.upperList).isEnabled = enabled
+        findViewById<RecyclerView>(R.id.bottomList).isEnabled = enabled
+        findViewById<ImageView>(R.id.binTopper).isEnabled = enabled
+        findViewById<ImageView>(R.id.navUser).isEnabled = enabled
+    }
+
+
+    private fun filterProducts(query: String) {
+        val filteredList = positionList.filter {
+            it.name.contains(query, ignoreCase = true) || it.desc.contains(query, ignoreCase = true)
+        }
+        searchResultsAdapter.updateList(filteredList)
+    }
+
+    private fun showSearchResults(container: View) {
+        val slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down)
+        container.visibility = View.VISIBLE
+
+        container.startAnimation(slideDown)
+
+    }
+
+    private fun hideSearchResults(container: View) {
+        val slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up)
+        container.startAnimation(slideUp)
+        container.visibility = View.GONE
+
     }
 
     private fun showQuantityDialog(

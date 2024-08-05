@@ -22,15 +22,17 @@
         <SearchView
             android:id="@+id/search"
             android:layout_width="0dp"
-            android:layout_weight="0.6"
+            android:layout_weight="1"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="20dp"
             android:background="@drawable/edittext_background"
             android:ems="10"
-            android:drawableLeft="@drawable/search"
-            android:importantForAutofill="no"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
+            android:iconifiedByDefault="false"/>
 
         <ImageView
             android:id="@+id/binTopper"
@@ -217,4 +219,36 @@
             android:layout_height="40dp"
             android:layout_weight="0.11"/>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/searchResultsContainer"
+        android:layout_width="match_parent"
+        android:layout_marginTop="65dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="#ebeced"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <ImageView
+            android:id="@+id/backButtonSearch"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/icon"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchResultsList"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
