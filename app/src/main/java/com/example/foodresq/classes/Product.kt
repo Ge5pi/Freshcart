@@ -8,5 +8,6 @@ data class Product(
     val image: String,
     val price: Int,
     val restId: Int,
-    val leftovers: Int = 0
+    val leftovers: Int = 0,
+    val searchId: Int = id,
 )

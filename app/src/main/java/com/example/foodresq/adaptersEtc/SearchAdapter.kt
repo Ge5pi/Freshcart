@@ -13,8 +13,8 @@ import com.bumptech.glide.Glide
 import com.example.foodresq.R
 import com.example.foodresq.classes.Product
 
-class ProductAdapter(private var foods: List<Product>, private val context: Context) :
-    RecyclerView.Adapter<ProductAdapter.MyViewHolder>() {
+class SearchAdapter(private var foods: List<Product>, private val context: Context) :
+    RecyclerView.Adapter<SearchAdapter.MyViewHolder>() {
 
     private var mListener: OnItemClickListener? = null
     private var cListener: AddToCartClickListener? = null
@@ -24,9 +24,8 @@ class ProductAdapter(private var foods: List<Product>, private val context: Cont
     }
 
     interface AddToCartClickListener {
-        fun addToCart(id: Int, toCartButton: Button, inCartButton: Button)
+        fun addToCart(id: Int, toCartButton: Button)
     }
-
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
         mListener = listener
@@ -36,19 +35,11 @@ class ProductAdapter(private var foods: List<Product>, private val context: Cont
         cListener = listener
     }
 
-    fun updateList(newList: List<Product>) {
-        foods = newList
-        notifyDataSetChanged()
-    }
 
-    class MyViewHolder(
-        view: View,
-        listener: OnItemClickListener?,
-        listenerCart: AddToCartClickListener?
-    ) : RecyclerView.ViewHolder(view) {
-        val img: ImageView = view.findViewById(R.id.productPic)
-        val name: TextView = view.findViewById(R.id.productName)
-        val price: TextView = view.findViewById(R.id.productPrice)
+    class MyViewHolder(view: View, listener: OnItemClickListener?, listenerCart: AddToCartClickListener?) : RecyclerView.ViewHolder(view) {
+        val img: ImageView = view.findViewById(R.id.img)
+        val name: TextView = view.findViewById(R.id.name)
+        val price: TextView = view.findViewById(R.id.price)
         val toCartButton: Button = view.findViewById(R.id.toCart)
         val leftovers: TextView = view.findViewById(R.id.leftovers)
         var id: Int = 0
@@ -59,19 +50,25 @@ class ProductAdapter(private var foods: List<Product>, private val context: Cont
             }
 
             toCartButton.setOnClickListener {
-                listenerCart?.addToCart(id, toCartButton, view.findViewById(R.id.toCart))
+                listenerCart?.addToCart(id, toCartButton)
             }
+
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.product_in_list, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.product_in_search, parent, false)
         return MyViewHolder(view, mListener, cListener)
     }
 
     override fun getItemCount(): Int {
         return foods.count()
+    }
+
+    fun updateList(newList: List<Product>) {
+        foods = newList
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

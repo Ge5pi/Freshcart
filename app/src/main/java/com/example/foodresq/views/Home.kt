@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodresq.R
 import com.example.foodresq.adaptersEtc.ProductAdapter
 import com.example.foodresq.adaptersEtc.RestaurantAdapter
+import com.example.foodresq.adaptersEtc.SearchAdapter
 import com.example.foodresq.classes.Product
 import com.example.foodresq.classes.Restaurant
 import com.example.foodresq.views.CartList.Companion.isRecreate
@@ -45,19 +46,21 @@ class Home : Activity() {
         private const val TAG = "Home"
     }
 
+    private val filteredList = mutableListOf<Product>()
     private lateinit var foodList: RecyclerView
     private lateinit var searchResultsList: RecyclerView
     private lateinit var adapter1: ProductAdapter
-    private lateinit var searchResultsAdapter: ProductAdapter
+    private lateinit var searchResultsAdapter: SearchAdapter
     private val positionList = mutableListOf<Product>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
+        val searchResultsContainer = findViewById<View>(R.id.searchResultsContainer)
         foodList = findViewById(R.id.upperList)
         searchResultsList = findViewById(R.id.searchResultsList)
-        val searchResultsContainer = findViewById<View>(R.id.searchResultsContainer)
+
         val fireDb = Firebase.firestore
         val auth = Firebase.auth
 
@@ -68,7 +71,7 @@ class Home : Activity() {
         }
 
         adapter1 = ProductAdapter(positionList, this)
-        searchResultsAdapter = ProductAdapter(positionList, this)
+        searchResultsAdapter = SearchAdapter(filteredList, this)
 
         foodList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         foodList.adapter = adapter1
@@ -113,6 +116,16 @@ class Home : Activity() {
                                         leftovers
                                     )
                                 )
+                                filteredList.add(Product(
+                                    id,
+                                    factId,
+                                    name,
+                                    description,
+                                    image,
+                                    price,
+                                    restIdNumeric,
+                                    leftovers
+                                ))
                                 adapter1.notifyDataSetChanged()
                             }
                         }
@@ -136,10 +149,33 @@ class Home : Activity() {
             }
         })
 
+        searchResultsAdapter.setOnItemClickListener(object: SearchAdapter.OnItemClickListener{
+            override fun onItemClick(id: Int) {
+                val intent = Intent(this@Home, DetailedActivityFood::class.java).apply {
+                    Log.i(TAG, "filteredList[id]: ${filteredList[id]}")
+                    putExtra("prodId", filteredList[id].searchId)
+                    putExtra("product", filteredList[id].image)
+                    putExtra("name", filteredList[id].name)
+                    putExtra("price", filteredList[id].price)
+                    putExtra("desc", filteredList[id].desc)
+                    putExtra("restId", filteredList[id].restId)
+                }
+                startActivity(intent)
+            }
+
+        })
+
         adapter1.setOnAddToCartClickListener(object : ProductAdapter.AddToCartClickListener {
             override fun addToCart(id: Int, toCartButton: Button, inCartButton: Button) {
                 showQuantityDialog(this@Home, id, fireDb, auth)
             }
+        })
+
+        searchResultsAdapter.setOnAddToCartClickListener(object: SearchAdapter.AddToCartClickListener{
+            override fun addToCart(id: Int, toCartButton: Button) {
+                showQuantityDialog(this@Home, id, fireDb, auth)
+            }
+
         })
 
         val restList = findViewById<RecyclerView>(R.id.bottomList)
@@ -242,18 +278,44 @@ class Home : Activity() {
         }
     }
     private fun setViewsEnabled(enabled: Boolean) {
-        findViewById<RecyclerView>(R.id.upperList).isEnabled = enabled
-        findViewById<RecyclerView>(R.id.bottomList).isEnabled = enabled
-        findViewById<ImageView>(R.id.binTopper).isEnabled = enabled
-        findViewById<ImageView>(R.id.navUser).isEnabled = enabled
+        val bt = findViewById<RecyclerView>(R.id.bottomList)
+        val up = findViewById<RecyclerView>(R.id.upperList)
+//        findViewById<ImageView>(R.id.binTopper).isEnabled = enabled
+        val nav = findViewById<ImageView>(R.id.navUser)
+        if(!enabled){
+            bt.visibility = View.GONE
+            up.visibility = View.GONE
+            nav.visibility = View.GONE
+        }
+        else{
+            bt.visibility = View.VISIBLE
+            up.visibility = View.VISIBLE
+            nav.visibility = View.VISIBLE
+        }
     }
 
 
     private fun filterProducts(query: String) {
-        val filteredList = positionList.filter {
-            it.name.contains(query, ignoreCase = true) || it.desc.contains(query, ignoreCase = true)
+
+        var counter = 0
+        filteredList.clear()
+        for(pos in positionList){
+            if(!(pos.name.contains(query, ignoreCase = true) || pos.desc.contains(query, ignoreCase = true))){
+                counter+=1
+                Log.i(TAG, "Counter in if: $counter")
+            }
+            else{
+                val newProd = Product(pos.id-counter, pos.fact_id, pos.name, pos.desc, pos.image, pos.price, pos.restId, pos.leftovers, pos.id)
+                Log.i(TAG, "newProd: oldId: ${pos.id}, newId: ${pos.id-counter}")
+                Log.i(TAG, "newProd: $newProd")
+                filteredList.add(newProd)
+                Log.i(TAG, "filteredList: $filteredList")
+            }
         }
+
         searchResultsAdapter.updateList(filteredList)
+
+
     }
 
     private fun showSearchResults(container: View) {
@@ -277,6 +339,7 @@ class Home : Activity() {
         fireDb: FirebaseFirestore,
         auth: FirebaseAuth
     ) {
+        val search = findViewById<SearchView>(R.id.search)
         val dialogView =
             LayoutInflater.from(context).inflate(R.layout.dialog_quantity_selector, null)
         val editQuantity = dialogView.findViewById<EditText>(R.id.edit_quantity)
@@ -390,6 +453,9 @@ class Home : Activity() {
                                                                 TAG,
                                                                 "HOME(ADD TO CART): CART UPDATED SUCCESSFULLY"
                                                             )
+
+                                                            search.clearFocus()
+
                                                             recreate()
                                                             Toast.makeText(
                                                                 context,
