@@ -99,9 +99,6 @@ class Profile : Activity() {
             finish()
         }
 
-
-        var string = "aaa"
-
         val backButton: ImageView = findViewById(R.id.backButton)
         backButton.setOnClickListener {
 
@@ -116,7 +113,7 @@ class Profile : Activity() {
         }
 
         val myRestButton: Button = findViewById(R.id.myRest)
-//        if (current != null) {
+//      if (current != null) {
 //            if(current.is_owner != 1){
 //                myRestButton.visibility = View.GONE
 //            }

@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class AuthActivity : Activity() {
@@ -167,6 +168,17 @@ class AuthActivity : Activity() {
                 this,
                 OnCompleteListener<AuthResult?> { task ->
                     if (task.isSuccessful) {
+                        val fireDb = Firebase.firestore
+                        val usersCol = fireDb.collection("users")
+                        val userData = hashMapOf(
+                            "login" to (auth.currentUser?.displayName.toString()),
+                            "email" to auth.currentUser?.email.toString(),
+                            "password" to auth.currentUser?.uid.toString(),
+                            "rest_id" to -1,
+                            "avatar" to "",
+                            "cart" to listOf<Int>()
+                        )
+                        usersCol.add(userData)
                         Log.d(AuthActivity.TAG, "signInWithCredential:success")
                         val user = auth.currentUser
                         updateUI(user)

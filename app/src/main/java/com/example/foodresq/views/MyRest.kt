@@ -117,6 +117,7 @@ class MyRest : Activity() {
                 for (document in documents) {
                     Log.d(TAG, "doc: ${document.getString("rest_id")}")
                     if (document.getString("rest_id") == rest.factId) {
+                        Log.d(TAG, "rest: ${rest.factId}")
                         val id = document.getLong("id")?.toInt() ?: 0
                         val factId = document.id
                         val nameFact = document.getString("name") ?: ""

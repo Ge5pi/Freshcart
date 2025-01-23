@@ -155,6 +155,7 @@ class MainActivity : ComponentActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)!!
                 Log.d(TAG, "FirebaseAuthWithGoogle:" + account.id)
+
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: Exception) {
                 Log.w(TAG, "Google sign in failed", e)
@@ -177,7 +178,6 @@ class MainActivity : ComponentActivity() {
                         Log.d(TAG, "signInWithCredential:success")
                         val user = auth.currentUser
                         updateUI(user)
-
                     } else {
                         Log.d(TAG, "signInWithCredential:success", task.exception)
                         Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT)
