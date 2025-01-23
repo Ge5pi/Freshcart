@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="150dp"
+    android:padding="10dp"
     android:orientation="horizontal"
-    android:layout_marginHorizontal="10dp"
-
+    android:layout_marginHorizontal="20dp"
+    android:background="@drawable/rounded_corners"
     >
 
     <ImageView
@@ -13,7 +14,8 @@
         android:background="@color/white"
         android:id="@+id/cartPicProd"
         android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1.5"
         app:srcCompat="@drawable/empty_avatar"
         style="@style/CustomProductImage"/>
@@ -22,7 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="3"
+        android:layout_weight="2.8"
+        android:padding="10dp"
         android:id="@+id/mainBlockCart">
 
         <TextView

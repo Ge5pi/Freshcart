@@ -14,7 +14,8 @@ import com.example.foodresq.R
 import com.example.foodresq.classes.Product
 import com.example.foodresq.views.CartList.Companion.MAIN_ID
 
-class CartAdapter(private val foods: List<Product>, private val context: Context) : RecyclerView.Adapter<CartAdapter.MyViewHolder>() {
+class CartAdapter(private val foods: List<Product>, private val context: Context) :
+    RecyclerView.Adapter<CartAdapter.MyViewHolder>() {
 
     private var dListener: DeleteCartClickListener? = null
     private var totalPriceTextView: TextView? = null
@@ -27,7 +28,8 @@ class CartAdapter(private val foods: List<Product>, private val context: Context
         dListener = listener
     }
 
-    class MyViewHolder(view: View, listener: DeleteCartClickListener?) : RecyclerView.ViewHolder(view) {
+    class MyViewHolder(view: View, listener: DeleteCartClickListener?) :
+        RecyclerView.ViewHolder(view) {
         val img: ImageView = view.findViewById(R.id.cartPicProd)
         val name: TextView = view.findViewById(R.id.nameInCart)
         val price: TextView = view.findViewById(R.id.priceInCart)
@@ -44,7 +46,8 @@ class CartAdapter(private val foods: List<Product>, private val context: Context
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.product_in_cart, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.product_in_cart, parent, false)
         totalPriceTextView = (parent.context as ComponentActivity).findViewById(R.id.total)
         return MyViewHolder(view, dListener)
     }
@@ -56,11 +59,11 @@ class CartAdapter(private val foods: List<Product>, private val context: Context
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val product = foods[position]
         holder.name.text = product.name
-        holder.price.text = product.price.toString()
+        holder.price.text = "₸${product.price}"
         Glide.with(context)
             .load(product.image)
             .into(holder.img)
-        holder.quantity.text = product.leftovers.toString()
+        holder.quantity.text = "Количество: " + product.leftovers.toString()
         holder.id = position
 
         Glide.with(context)
@@ -72,15 +75,18 @@ class CartAdapter(private val foods: List<Product>, private val context: Context
             holder.view1.layoutParams = RecyclerView.LayoutParams(0, 0)
         } else {
             holder.view1.visibility = View.VISIBLE
-            holder.view1.layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            holder.view1.layoutParams = RecyclerView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
 
         // Update the total price
         updateTotalPrice()
     }
 
-    private fun updateTotalPrice() {
-        val totalPrice = foods.filter { MAIN_ID == it.restId }.sumOf { it.price }
-        totalPriceTextView?.text = totalPrice.toString()
+     private fun updateTotalPrice() {
+        val totalPrice = foods.filter { MAIN_ID == it.restId }.sumOf { it.price } * foods.filter { MAIN_ID == it.restId }.sumOf { it.leftovers }
+        totalPriceTextView?.text = "₸$totalPrice"
     }
 }

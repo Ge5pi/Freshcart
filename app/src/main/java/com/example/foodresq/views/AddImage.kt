@@ -34,8 +34,6 @@ class AddImage : ComponentActivity() {
         val fireDb = Firebase.firestore
 
         val imagePos = findViewById<ImageView>(R.id.imagePos)
-
-        // Use Glide to load the initial image
         val initialImageUri = "https://firebasestorage.googleapis.com/v0/b/foodresq-bc5d2.appspot.com/o/empty_avatar.png?alt=media&token=246e42a8-8e6b-4fac-9267-2f85568860e9"
         Glide.with(this)
             .load(initialImageUri)

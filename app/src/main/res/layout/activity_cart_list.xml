@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"
+    android:background="#ebeced"
     tools:context=".views.CartList">
 
     <ImageView
@@ -20,6 +20,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartNameList"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
@@ -29,8 +31,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecycle"
+        android:layout_marginHorizontal="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#ebeced"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cartNameList" />
@@ -42,14 +46,37 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="#cecece">
+        android:background="#fff">
 
-        <TextView
-            android:id="@+id/total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="lorem"
-            android:textSize="32dp"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:paddingHorizontal="20dp"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/totalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:textColor="@color/black"
+                android:text="Общая сумма:"
+                android:textSize="32sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="lorem"
+                android:textSize="32sp"
+                app:layout_constraintStart_toEndOf="@id/totalText"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/orderButton"
@@ -58,11 +85,10 @@
             android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginStart="30dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="30dp"
-            android:layout_marginBottom="30dp"
-            android:layout_marginTop="100dp"
-            android:text="Заказать"
-            />
+            android:layout_marginBottom="40dp"
+            android:text="Заказать" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

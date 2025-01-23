@@ -1,5 +1,6 @@
 package com.example.foodresq.adaptersEtc
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -74,6 +75,7 @@ class ProductAdapter(private var foods: List<Product>, private val context: Cont
         return foods.count()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val product = foods[position]
         if (product.leftovers == 0) {
@@ -82,7 +84,7 @@ class ProductAdapter(private var foods: List<Product>, private val context: Cont
         } else {
             holder.leftovers.text = "Остаток: ${product.leftovers}"
             holder.name.text = product.name
-            holder.price.text = product.price.toString()
+            holder.price.text = product.price.toString() + "₸"
             holder.id = product.id
             val initImg = product.image
 
