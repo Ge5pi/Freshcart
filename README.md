@@ -19,7 +19,7 @@ Transforming food waste into opportunities while making quality food accessible 
 - Making quality food accessible to all
 
 ## 📱 Application Overview
-FoodResQ is an Android application built to connect food establishments with consumers, offering near-expiry food at reduced prices. The app implements modern Android development practices with Kotlin and Firebase integration.
+Freshcart is an Android application built to connect food establishments with consumers, offering near-expiry food at reduced prices. The app implements modern Android development practices with Kotlin and Firebase integration.
 
 ## 🔑 Authentication Features
 - Multiple Sign-in Options:
@@ -69,3 +69,10 @@ FoodResQ is an Android application built to connect food establishments with con
   - Product data storage
   - User cart management
   - Order history
+
+## 📱 UI Components
+- Material Design implementation
+- Custom animations
+- Responsive layouts
+- Search functionality
+- Cart management interface
