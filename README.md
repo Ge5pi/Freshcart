@@ -70,6 +70,13 @@ Freshcart is an Android application built to connect food establishments with co
   - User cart management
   - Order history
 
+## 🛠️ Technical Implementation
+- MVVM Architecture
+- RecyclerView for efficient list handling
+- Glide for image loading
+- Firebase Authentication for user management
+- Cloud Firestore for data storage
+
 ## 📱 UI Components
 - Material Design implementation
 - Custom animations
