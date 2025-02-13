@@ -21,3 +21,27 @@ FoodResQ is an Android application built to connect food establishments with con
 - Email/Password Registration
 - Google Sign-in
 - Session Management
+
+## 🏗️ Core Components
+- Home Screen
+
+      class Home : Activity() {
+          private val filteredList = mutableListOf<Product>()
+          private lateinit var foodList: RecyclerView
+          private lateinit var searchResultsList: RecyclerView
+          
+          // Dynamic Product Loading
+          private fun filterProducts(query: String) {
+              filteredList.clear()
+              // Search implementation
+          }
+      }
+  
+- Product Display
+  
+      class ProductAdapter(
+          private var foods: List<Product>, 
+          private val context: Context
+      ) : RecyclerView.Adapter<ProductAdapter.MyViewHolder>() {
+          // Custom adapter for product display
+      }
