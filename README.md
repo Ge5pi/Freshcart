@@ -45,3 +45,16 @@ FoodResQ is an Android application built to connect food establishments with con
       ) : RecyclerView.Adapter<ProductAdapter.MyViewHolder>() {
           // Custom adapter for product display
       }
+## 🔥 Firebase Integration
+- Authentication
+  - User registration and login
+  - Profile management
+  - Session persistence
+- Firestore Database
+
+        val fireDb = Firebase.firestore
+        val usersCol = fireDb.collection("users")
+  
+  - Product data storage
+  - User cart management
+  - Order history
