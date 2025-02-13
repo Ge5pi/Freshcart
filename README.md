@@ -8,6 +8,16 @@
 ## 🎯 Our Mission
 Transforming food waste into opportunities while making quality food accessible to everyone. We're building a revolutionary ecosystem that connects food establishments with consumers, offering near-expiry food at significantly reduced prices.
 
+## 📊 Impact Statistics
+### Food Waste Reduction 🗑️
+- Currently, 40% of food is wasted annually
+- 1200k tons wasted in our region
+- 78% of wasted food is still edible
+### Social Impact 💝
+- Targeting 5.1% population below poverty line
+- Supporting 750k people under the breadline
+- Making quality food accessible to all
+
 ## 📱 Application Overview
 FoodResQ is an Android application built to connect food establishments with consumers, offering near-expiry food at reduced prices. The app implements modern Android development practices with Kotlin and Firebase integration.
 
