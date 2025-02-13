@@ -1,11 +1,12 @@
 # 🌟 Freshcart. Android Food Rescue Application: Fighting Waste, Feeding Hope 🍽️
 
 
-![Android-Studio-green](https://github.com/user-attachments/assets/f2f41d10-69ba-4d87-bc73-7731cff6ac90)
+![Android-Studio-green](https://github.com/user-attachments/assets/f2f41d10-69ba-4d87-bc73-7731cff6ac90) ![Firebase-Auth   Firestore-orange](https://github.com/user-attachments/assets/8c5542f7-6c50-4235-8fe2-257a56e9e607) ![Made with-Love-ff69b4](https://github.com/user-attachments/assets/80642a20-7066-4ffc-b30b-1d143b92fc30)
 
-![Firebase-Auth   Firestore-orange](https://github.com/user-attachments/assets/8c5542f7-6c50-4235-8fe2-257a56e9e607)
+> ## "If food waste were a country, its greenhouse gas emissions would be the third largest in the world, following the US and China." 🌍
 
-![Made with-Love-ff69b4](https://github.com/user-attachments/assets/80642a20-7066-4ffc-b30b-1d143b92fc30)
+## 🎯 Our Mission
+Transforming food waste into opportunities while making quality food accessible to everyone. We're building a revolutionary ecosystem that connects food establishments with consumers, offering near-expiry food at significantly reduced prices.
 
 ## 📱 Application Overview
 FoodResQ is an Android application built to connect food establishments with consumers, offering near-expiry food at reduced prices. The app implements modern Android development practices with Kotlin and Firebase integration.
