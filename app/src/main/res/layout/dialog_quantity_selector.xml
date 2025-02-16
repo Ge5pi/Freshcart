@@ -33,8 +33,8 @@
             android:clickable="false"
             android:gravity="center"
             android:inputType="number"
-            android:textIsSelectable="true"
-            android:text="1" />
+            android:text="1"
+            android:textIsSelectable="true" />
 
         <ImageView
             android:id="@+id/button_increase"

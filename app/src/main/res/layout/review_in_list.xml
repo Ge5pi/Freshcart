@@ -17,16 +17,16 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" />
 
         <RatingBar
             android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
             android:numStars="5"
-            android:layout_gravity="center_vertical"/>
+            android:stepSize="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -41,7 +41,6 @@
             android:id="@+id/reviewText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="TextView" />
+            android:layout_weight="1" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

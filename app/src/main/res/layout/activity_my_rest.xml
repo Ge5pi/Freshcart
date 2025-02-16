@@ -12,8 +12,8 @@
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
         android:layout_marginTop="10dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,10 +22,9 @@
             android:id="@+id/backButton"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="0.1"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/icon"
-            />
+            android:layout_weight="0.1"
+            android:src="@drawable/icon" />
 
         <TextView
             android:id="@+id/more"
@@ -40,33 +39,31 @@
         <ImageView
             android:id="@+id/editTop"
             android:layout_width="30dp"
-            android:layout_weight="0.1"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:contentDescription="Bin Top"
-            />
+            android:layout_weight="0.1"
+            android:contentDescription="Bin Top" />
     </LinearLayout>
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/restLogo"
         android:layout_width="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="20dp"
         android:layout_height="150dp"
         android:layout_centerInParent="true"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="20dp"
         android:adjustViewBounds="true"
+        android:src="@drawable/empty_avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topBar"
-        android:src="@drawable/empty_avatar"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/topBar" />
 
     <TextView
         android:id="@+id/fullName"
-        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_marginTop="20dp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/restLogo" />
@@ -76,8 +73,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
-        android:orientation="vertical"
         android:layout_marginTop="20dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fullName">

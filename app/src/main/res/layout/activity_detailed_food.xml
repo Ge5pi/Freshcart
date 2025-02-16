@@ -5,15 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.DetailedActivityFood"
-    android:background="#F9F9FA">
+    android:background="#F9F9FA"
+    tools:context=".views.DetailedActivityFood">
 
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
         android:layout_marginTop="10dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,29 +22,28 @@
             android:id="@+id/backButton"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="0.2"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/icon"
-            />
+            android:layout_weight="0.2"
+            android:src="@drawable/icon" />
 
         <TextView
             android:id="@+id/more"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/white"
+
             android:gravity="center"
-            android:text="TextView"
-            android:textSize="18sp"
-            android:background="@color/white"/>
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/binTop"
             android:layout_width="50dp"
-            android:layout_weight="0.2"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/bin_topper"
-            android:contentDescription="Bin Top" />
+            android:layout_weight="0.2"
+            android:contentDescription="Bin Top"
+            android:src="@drawable/bin_topper" />
     </LinearLayout>
 
     <ImageView
@@ -59,22 +58,22 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="#FFFFFF"
         android:id="@+id/details"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
+        android:background="#FFFFFF"
         android:padding="20dp"
+        app:layout_constraintBottom_toTopOf="@id/footer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product"
-        app:layout_constraintBottom_toTopOf="@id/footer">
+        app:layout_constraintTop_toBottomOf="@id/product">
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
+
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -84,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
-            android:text="TextView"
+
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name" />
@@ -94,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
-            android:text="TextView"
+
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/price" />
@@ -121,16 +120,16 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/delete"
         android:layout_width="50dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
         android:layout_height="50dp"
         android:layout_gravity="end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/delete"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/details"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/delete" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footer"
@@ -140,6 +139,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -161,13 +161,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="TextView"
+
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/priceText" />
 
         <Button
             android:id="@+id/toCart"
+            style="@style/CustomButton"
             android:layout_width="160dp"
             android:layout_height="54dp"
             android:layout_marginVertical="10dp"
@@ -175,8 +176,7 @@
             android:text="В корзину"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            style="@style/CustomButton"/>
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

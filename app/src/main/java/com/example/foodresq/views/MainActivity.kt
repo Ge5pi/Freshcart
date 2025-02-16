@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.common.hash.Hashing.md5
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -25,6 +26,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.security.MessageDigest
 
 
 class MainActivity : ComponentActivity() {
@@ -78,7 +80,7 @@ class MainActivity : ComponentActivity() {
         buttonReg.setOnClickListener {
             val login = username.text.toString().trim()
             val email = userEmail.text.toString().trim()
-            val password = userPassword.text.toString().trim()
+            var password = userPassword.text.trim().hashCode().toString()
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
@@ -209,3 +211,5 @@ class MainActivity : ComponentActivity() {
                 })
     }
 }
+
+

@@ -27,6 +27,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.security.MessageDigest
 
 class AuthActivity : Activity() {
 
@@ -72,10 +73,10 @@ class AuthActivity : Activity() {
 
         buttonAuth.setOnClickListener {
             val userEmail = email.text.toString().trim()
-            val userPassword = password.text.toString().trim()
-//            if (userPassword == "" || userEmail == "") {
-//                Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
-//            } else {
+            val userPassword = password.text.trim().hashCode().toString()
+            if (userPassword == "" || userEmail == "") {
+               Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
+            } else {
 //                val isAuth = db.getUser(userEmail, userPassword)
 //                if (isAuth) {
 //                    Toast.makeText(this, "Вы вошли в аккаунт", Toast.LENGTH_LONG).show()
@@ -97,22 +98,23 @@ class AuthActivity : Activity() {
 //                    Toast.makeText(this, "Неверное имя пользователя или пароль", Toast.LENGTH_LONG).show()
 //                }
 //            }
-            auth.signInWithEmailAndPassword(userEmail, userPassword)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Log.d(TAG, "signInWithEmail:success")
-                        val user = auth.currentUser
-                        updateUI(user)
-                    } else {
-                        Log.w(TAG, "signInWithEmail:failure", task.exception)
-                        Toast.makeText(
-                            baseContext,
-                            "Authentication failed.",
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        updateUI(null)
+                auth.signInWithEmailAndPassword(userEmail, userPassword)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            Log.d(TAG, "signInWithEmail:success")
+                            val user = auth.currentUser
+                            updateUI(user)
+                        } else {
+                            Log.w(TAG, "signInWithEmail:failure", task.exception)
+                            Toast.makeText(
+                                baseContext,
+                                "Authentication failed.",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                            updateUI(null)
+                        }
                     }
-                }
+            }
         }
 
         backButton.setOnClickListener {
@@ -202,5 +204,12 @@ class AuthActivity : Activity() {
                         updateUI(null)
                     }
                 })
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    fun String.md5(): String {
+        val md = MessageDigest.getInstance("MD5")
+        val digest = md.digest(this.toByteArray())
+        return digest.toHexString()
     }
 }

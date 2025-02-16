@@ -20,10 +20,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartNameList"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,9 +31,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecycle"
-        android:layout_marginHorizontal="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
         android:background="#ebeced"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,37 +42,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:background="#fff"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="#fff">
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginTop="30dp"
-            android:paddingHorizontal="20dp"
-            android:layout_gravity="center_vertical">
+            android:paddingHorizontal="20dp">
 
             <TextView
                 android:id="@+id/totalText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:textColor="@color/black"
                 android:text="Общая сумма:"
+                android:textColor="@color/black"
                 android:textSize="32sp"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="lorem"
+
                 android:textSize="32sp"
                 app:layout_constraintStart_toEndOf="@id/totalText"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -1,47 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/main"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.MainActivity"
-    android:background="#ebeced">
+    android:background="#ebeced"
+    tools:context=".views.MainActivity">
 
     <LinearLayout
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/topLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/topLayout">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <SearchView
             android:id="@+id/search"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="20dp"
+            android:layout_weight="1"
             android:background="@drawable/edittext_background"
+            android:clickable="true"
             android:ems="10"
-            android:inputType="text"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:clickable="true"
-            android:iconifiedByDefault="false"/>
+            android:iconifiedByDefault="false"
+            android:inputType="text" />
 
         <ImageView
             android:id="@+id/binTopper"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center|center_horizontal"
-            android:scaleType="centerCrop"
             android:layout_marginRight="10dp"
-            android:src="@drawable/bin_topper"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/bin_topper" />
 
     </LinearLayout>
 
@@ -72,30 +71,30 @@
                 android:id="@+id/takeNow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
                 android:background="#ebeced"
-                android:layout_marginLeft="20dp"
                 android:text="Забрать сейчас" />
 
             <TextView
                 android:id="@+id/moreFood"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
                 android:layout_weight="1"
                 android:background="#ebeced"
-                android:text="Подробнее"
                 android:gravity="end"
-                android:layout_marginRight="20dp"/>
+                android:text="Подробнее" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/upperList"
-            android:paddingVertical="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal"
+            android:paddingVertical="10dp" />
     </LinearLayout>
 
     <TextView
@@ -103,10 +102,10 @@
         android:id="@+id/rests"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginBottom="8dp"
         android:background="#ebeced"
         android:padding="5dp"
-        android:layout_marginStart="20dp"
         android:text="Заведения"
         app:layout_constraintBottom_toTopOf="@+id/bottomLayout"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,8 +115,8 @@
         android:id="@+id/moreRests"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="end"
         android:layout_marginEnd="20dp"
+        android:gravity="end"
         android:padding="5dp"
         android:text="Подробнее"
         app:layout_constraintBottom_toBottomOf="@+id/rests"
@@ -127,23 +126,23 @@
         tools:ignore="MissingConstraints" />
 
     <LinearLayout
-        android:background="#ebeced"
         android:id="@+id/bottomLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="#ebeced"
         android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/navbar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rests"
-        app:layout_constraintBottom_toBottomOf="@id/navbar">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rests">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:background="#ebeced"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:id="@+id/bottomList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="#ebeced"
             android:orientation="vertical" />
     </LinearLayout>
 
@@ -151,17 +150,17 @@
         android:id="@+id/navbar"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomLayout"
+        android:background="#ebeced"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="#ebeced">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bottomLayout">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_weight="0.11"/>
+            android:layout_weight="0.11" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -179,7 +178,7 @@
                     android:layout_height="24dp"
                     android:layout_centerInParent="true"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/bin_topper"/>
+                    android:src="@drawable/bin_topper" />
 
             </RelativeLayout>
 
@@ -217,37 +216,38 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_weight="0.11"/>
+            android:layout_weight="0.11" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/searchResultsContainer"
         android:layout_width="match_parent"
-        android:layout_marginTop="65dp"
         android:layout_height="match_parent"
+        android:layout_marginTop="65dp"
+        android:background="#ebeced"
         android:orientation="vertical"
         android:visibility="gone"
-        android:background="#ebeced"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_bar">
+
         <ImageView
             android:id="@+id/backButtonSearch"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/icon"
-            />
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/icon" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchResultsList"
-            android:layout_gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:orientation="vertical" />
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="16dp" />
 
     </LinearLayout>
 

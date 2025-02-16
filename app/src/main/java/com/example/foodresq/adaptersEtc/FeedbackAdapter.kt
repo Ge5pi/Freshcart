@@ -12,16 +12,18 @@ import com.example.foodresq.classes.Review
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class FeedbackAdapter(private val reviews: List<Review>, private val context: Context): RecyclerView.Adapter<FeedbackAdapter.MyViewHolder>() {
+class FeedbackAdapter(private val reviews: List<Review>, private val context: Context) :
+    RecyclerView.Adapter<FeedbackAdapter.MyViewHolder>() {
 
-    class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ratingBar: RatingBar = view.findViewById(R.id.ratingBar)
         val username: TextView = view.findViewById(R.id.username)
         val reviewText: TextView = view.findViewById(R.id.reviewText)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.review_in_list, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.review_in_list, parent, false)
         return MyViewHolder(view)
     }
 
