@@ -77,27 +77,6 @@ class AuthActivity : Activity() {
             if (userPassword == "" || userEmail == "") {
                Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
             } else {
-//                val isAuth = db.getUser(userEmail, userPassword)
-//                if (isAuth) {
-//                    Toast.makeText(this, "Вы вошли в аккаунт", Toast.LENGTH_LONG).show()
-//                    email.text.clear()
-//                    password.text.clear()
-//
-//                    // Save login state and user email
-//                    val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-//                    with(sharedPreferences.edit()) {
-//                        putBoolean("is_logged_in", true)
-//                        putString("user_email", userEmail)
-//                        apply()
-//                    }
-//
-//                    val intent = Intent(this, Home::class.java)
-//                    startActivity(intent)
-//                    finish()
-//                } else {
-//                    Toast.makeText(this, "Неверное имя пользователя или пароль", Toast.LENGTH_LONG).show()
-//                }
-//            }
                 auth.signInWithEmailAndPassword(userEmail, userPassword)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
@@ -106,8 +85,7 @@ class AuthActivity : Activity() {
                             updateUI(user)
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
-                            Toast.makeText(
-                                baseContext,
+                            Toast.makeText(this,
                                 "Authentication failed.",
                                 Toast.LENGTH_SHORT,
                             ).show()
