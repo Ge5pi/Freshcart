@@ -172,7 +172,8 @@ class AuthActivity : Activity() {
                     if (task.isSuccessful) {
                         val fireDb = Firebase.firestore
                         val usersCol = fireDb.collection("users")
-                        fireDb.collection("users").whereEqualTo("email", auth.currentUser?.email.toString()).get()
+                        fireDb.collection("users")
+                            .whereEqualTo("email", auth.currentUser?.email.toString()).get()
                             .addOnSuccessListener { users ->
                                 if (users.isEmpty) {
                                     Log.i(TAG, "No user found")

@@ -57,7 +57,10 @@ class MyRest : Activity() {
                     .addOnSuccessListener { documents ->
                         if (documents.isEmpty) {
                             docRest = -1
-                            Log.d(TAG, "ERROR BLOCK{rest: $rest, docRest: rest_id in user: $docRest}")
+                            Log.d(
+                                TAG,
+                                "ERROR BLOCK{rest: $rest, docRest: rest_id in user: $docRest}"
+                            )
                         } else {
                             for (document in documents) {
                                 rest = Restaurant(
@@ -131,8 +134,7 @@ class MyRest : Activity() {
                             )
                         )
                         Log.d(TAG, "position List: $positionList")
-                    }
-                    else Log.d(TAG, "Ne to: ${document.getString("rest_id")}, vo: ${rest.factId}")
+                    } else Log.d(TAG, "Ne to: ${document.getString("rest_id")}, vo: ${rest.factId}")
                     adapter1.notifyDataSetChanged()
                 }
             }
@@ -143,7 +145,6 @@ class MyRest : Activity() {
         }
 
 
-
         val addPos: Button = findViewById(addPositionButton)
         addPos.setOnClickListener {
             val intent = Intent(this, AddPosition::class.java)
@@ -151,5 +152,12 @@ class MyRest : Activity() {
             startActivity(intent)
             finish()
         }
+
+        val backButton: ImageView = findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            val intent = Intent(this, Home::class.java)
+            startActivity(intent)
+        }
+
     }
 }

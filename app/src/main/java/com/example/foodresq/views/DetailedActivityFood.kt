@@ -124,7 +124,10 @@ class DetailedActivityFood : Activity() {
                         .into(restView)
 
                     if (user.rest_id == rest.id) {
-                        Log.d(TAG, "rest_id in user: ${user.rest_id}, rest id(Int) in rest: ${rest.id}")
+                        Log.d(
+                            TAG,
+                            "rest_id in user: ${user.rest_id}, rest id(Int) in rest: ${rest.id}"
+                        )
                         findViewById<ImageView>(R.id.delete).apply {
                             visibility = View.VISIBLE
                             setOnClickListener { showDeleteDialog(productDetails.fact_id) }
@@ -164,52 +167,48 @@ class DetailedActivityFood : Activity() {
         }
         yesButton.setOnClickListener {
             val refCollection = Firebase.firestore.collection("positions")
-                    Log.d(TAG, "Document successfully deleted!")
-                    Toast.makeText(this, "Товар успешно удален", Toast.LENGTH_SHORT).show()
-                    val myCurrentDoc = mutableListOf<QueryDocumentSnapshot>()
-                    fireDb.collection("positions").get().addOnSuccessListener {
-                        for(doc in it){
-                            if (doc.id == prodFactId)
-                                myCurrentDoc.add(doc)
-                        }
-                        fireDb.collection("positions").get().addOnSuccessListener {documents ->
-                            for(document in documents){
-                                if((document.getLong("id")?.toInt()
-                                        ?: 0) > (myCurrentDoc[0].getLong("id")?.toInt() ?: 0)
-                                ){
-                                    fireDb.runTransaction { transaction ->
-                                        val newId = (document.getLong("id")?.toInt() ?: 0) - 1
-                                        Log.d(TAG, "new id: $newId")
-                                        val posRef = fireDb.collection("positions").document(document.id)
-                                        transaction.update(posRef, "id", newId)
-                                        null
-                                    }
-                                }
-                                else{
-                                    Log.d(TAG, "current id: ${document.getLong("id")?.toInt() ?: 0}")
-                                }
+            Log.d(TAG, "Document successfully deleted!")
+            Toast.makeText(this, "Товар успешно удален", Toast.LENGTH_SHORT).show()
+            val myCurrentDoc = mutableListOf<QueryDocumentSnapshot>()
+            fireDb.collection("positions").get().addOnSuccessListener {
+                for (doc in it) {
+                    if (doc.id == prodFactId)
+                        myCurrentDoc.add(doc)
+                }
+                fireDb.collection("positions").get().addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        if ((document.getLong("id")?.toInt()
+                                ?: 0) > (myCurrentDoc[0].getLong("id")?.toInt() ?: 0)
+                        ) {
+                            fireDb.runTransaction { transaction ->
+                                val newId = (document.getLong("id")?.toInt() ?: 0) - 1
+                                Log.d(TAG, "new id: $newId")
+                                val posRef = fireDb.collection("positions").document(document.id)
+                                transaction.update(posRef, "id", newId)
+                                null
                             }
-                            refCollection.document(prodFactId).delete()
+                        } else {
+                            Log.d(TAG, "current id: ${document.getLong("id")?.toInt() ?: 0}")
                         }
-                    }.addOnCompleteListener {
-                        fireDb.collection("counters").get().addOnSuccessListener{counter ->
-                            for(count in counter){
-                                fireDb.runTransaction { transaction ->
-                                    val newCount = (count.getLong("current_id")?.toInt() ?: 0) - 1
-                                    val countRef = fireDb.collection("counters").document(count.id)
-                                    transaction.update(countRef, "current_id", newCount)
-                                    null
-                                }
-                            }
-                            myDialog.dismiss()
-                        }
-                    }.addOnSuccessListener {
-                        intent.putExtra("isRecreate", true)
-                        startActivity(Intent(this, Home::class.java))
                     }
-
-
-
+                    refCollection.document(prodFactId).delete()
+                }
+            }.addOnCompleteListener {
+                fireDb.collection("counters").get().addOnSuccessListener { counter ->
+                    for (count in counter) {
+                        fireDb.runTransaction { transaction ->
+                            val newCount = (count.getLong("current_id")?.toInt() ?: 0) - 1
+                            val countRef = fireDb.collection("counters").document(count.id)
+                            transaction.update(countRef, "current_id", newCount)
+                            null
+                        }
+                    }
+                    myDialog.dismiss()
+                }
+            }.addOnSuccessListener {
+                intent.putExtra("isRecreate", true)
+                startActivity(Intent(this, Home::class.java))
+            }
 
 
                 .addOnFailureListener { e ->
