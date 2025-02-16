@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -27,7 +28,7 @@ import com.google.firebase.storage.ktx.storage
 
 class Profile : Activity() {
 
-    private companion object{
+    private companion object {
         private const val TAG = "Profile"
         private const val RC_GOOGLE_SIGN_IN = 4926
     }
@@ -64,8 +65,6 @@ class Profile : Activity() {
         Log.i(TAG, "User credentials: ${current?.displayName}, ${current?.email}")
 
 
-
-
 //        if (current != null) {
 //            userLogin.text = current.login
 //        }
@@ -81,7 +80,6 @@ class Profile : Activity() {
 //            val imageID = resources.getIdentifier("empty_avatar", "drawable", packageName)
 //            avatar.setImageResource(imageID)
 //        }
-
 
 
         val logoutButton: TextView = findViewById(R.id.buttonLogout)
@@ -113,14 +111,21 @@ class Profile : Activity() {
         }
 
         val myRestButton: Button = findViewById(R.id.myRest)
-//      if (current != null) {
-//            if(current.is_owner != 1){
-//                myRestButton.visibility = View.GONE
-//            }
-              //else{
-                  //myRestButton.visibility = View.VISIBLE
-        //}
-//        }
+        if (current != null) {
+            firedb.collection("users").whereEqualTo("email", current.email).get()
+                .addOnSuccessListener { users ->
+                    for (user in users) {
+                        val restOwner = user.getLong("rest_id")?.toInt() ?: -1
+                        if (restOwner != 1) {
+                            myRestButton.visibility = View.GONE
+                        } else {
+                            myRestButton.visibility = View.VISIBLE
+                        }
+                    }
+
+                }
+        }
+
         myRestButton.setOnClickListener {
             val intent = Intent(this@Profile, MyRest::class.java)
             startActivity(intent)
@@ -169,14 +174,15 @@ class Profile : Activity() {
         Log.i(TAG, "User credentials: ${current?.displayName}, ${current?.email}")
 
 
-        val doc = fireDb.collection("users").whereEqualTo("email", current?.email).get().addOnSuccessListener {
-            documents -> if(documents.isEmpty) Log.d(TAG, "") else{
-                for(document in documents){
-                    val docId = document.id
-                    Log.d("TAG", "Document ID: $docId")
+        val doc = fireDb.collection("users").whereEqualTo("email", current?.email).get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) Log.d(TAG, "") else {
+                    for (document in documents) {
+                        val docId = document.id
+                        Log.d("TAG", "Document ID: $docId")
+                    }
                 }
-        }
-        }
+            }
 
     }
 

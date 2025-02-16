@@ -10,8 +10,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 import com.example.foodresq.R
 import com.example.foodresq.classes.DbHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -170,15 +172,25 @@ class AuthActivity : Activity() {
                     if (task.isSuccessful) {
                         val fireDb = Firebase.firestore
                         val usersCol = fireDb.collection("users")
-                        val userData = hashMapOf(
-                            "login" to (auth.currentUser?.displayName.toString()),
-                            "email" to auth.currentUser?.email.toString(),
-                            "password" to auth.currentUser?.uid.toString(),
-                            "rest_id" to -1,
-                            "avatar" to "",
-                            "cart" to listOf<Int>()
-                        )
-                        usersCol.add(userData)
+                        fireDb.collection("users").whereEqualTo("email", auth.currentUser?.email.toString()).get()
+                            .addOnSuccessListener { users ->
+                                if (users.isEmpty) {
+                                    Log.i(TAG, "No user found")
+                                    val userData = hashMapOf(
+                                        "login" to (auth.currentUser?.displayName.toString()),
+                                        "email" to auth.currentUser?.email.toString(),
+                                        "password" to auth.currentUser?.uid.toString(),
+                                        "rest_id" to -1,
+                                        "avatar" to "",
+                                        "cart" to listOf<Int>()
+                                    )
+
+                                    usersCol.add(userData)
+                                } else {
+                                    Log.i(TAG, "User already registered")
+                                }
+                            }
+
                         Log.d(AuthActivity.TAG, "signInWithCredential:success")
                         val user = auth.currentUser
                         updateUI(user)

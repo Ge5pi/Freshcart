@@ -32,11 +32,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="TextView"
-            android:textSize="18sp"
             android:background="#FFFFFF"
-            />
+            android:gravity="center"
+            android:text="My restaurant"
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/editTop"
