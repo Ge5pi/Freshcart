@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -44,10 +45,15 @@ class DetailedActivityRestaurants : Activity() {
         }
 
 
+
         val restLogo: ImageView = findViewById(R.id.restaurant)
         val restName: TextView = findViewById(R.id.restName)
         val restDesc: TextView = findViewById(R.id.restDesc)
         val fireDb = Firebase.firestore
+
+        restDesc.visibility = View.GONE
+        restName.visibility = View.GONE
+        restLogo.visibility = View.GONE
 
         val bundle: Bundle? = intent.extras
         var logoImage = ""
@@ -158,6 +164,14 @@ class DetailedActivityRestaurants : Activity() {
                 adapter.notifyDataSetChanged()
             }.addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting feedback: ", exception)
+            }.addOnCompleteListener {
+                loading.post{
+                    frameAnimation.stop()
+                    loading.visibility = View.GONE
+                    restDesc.visibility = View.VISIBLE
+                    restName.visibility = View.VISIBLE
+                    restLogo.visibility = View.VISIBLE
+                }
             }
     }
 }
