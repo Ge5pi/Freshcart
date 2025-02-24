@@ -157,6 +157,8 @@ class DetailedActivityRestaurants : Activity() {
             }.addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting feedback: ", exception)
             }
+
+        frameAnimation.stop()
     }
 }
 
