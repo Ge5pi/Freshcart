@@ -2,10 +2,12 @@ package com.example.foodresq.views
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +21,7 @@ import com.example.foodresq.classes.Review
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class DetailedActivityRestaurants : Activity() {
+class DetailedActivityRestaurants : AppCompatActivity() {
     private companion object {
         private const val RC_GOOGLE_SIGN_IN = 4926
         private const val TAG = "DetailedActivityRestaurants"
@@ -33,6 +35,9 @@ class DetailedActivityRestaurants : Activity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+
+
 
         val restLogo: ImageView = findViewById(R.id.restaurant)
         val restName: TextView = findViewById(R.id.restName)
@@ -67,7 +72,8 @@ class DetailedActivityRestaurants : Activity() {
 //        restLogo.setImageResource(logoID)
 
         val foodList: RecyclerView = findViewById(R.id.foodList)
-        foodList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        foodList.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         val positionList = mutableListOf<Product>()
         val adapter1 = ProductAdapter(positionList, this)
@@ -119,7 +125,8 @@ class DetailedActivityRestaurants : Activity() {
         }
 
         val reviewList = findViewById<RecyclerView>(R.id.feedbackLayout)
-        reviewList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        reviewList.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         val reviews = mutableListOf<Review>()
         val adapter = FeedbackAdapter(reviews, this)
@@ -128,18 +135,17 @@ class DetailedActivityRestaurants : Activity() {
         fireDb.collection("feedback").get()
             .addOnSuccessListener { feedDoc ->
                 Log.d(TAG, "restId: $restId, feedDoc: $feedDoc")
-                if(feedDoc.isEmpty){Log.d(TAG, "FeedDoc is empty")
-                }
-                else {
+                if (feedDoc.isEmpty) {
+                    Log.d(TAG, "FeedDoc is empty")
+                } else {
                     for (doc in feedDoc) {
-                        if(doc.getString("rest_id")==restId) {
+                        if (doc.getString("rest_id") == restId) {
                             Log.d(TAG, "docId: ${doc.id}")
                             val rating = doc.getLong("rating")?.toFloat() ?: 0f
                             val text = doc.getString("body") ?: ""
                             val userId = doc.getString("user_id") ?: ""
                             reviews.add(Review(userId, text, rating, restId))
-                        }
-                        else{
+                        } else {
                             Log.d(TAG, "factual restId: ${doc.getString("rest_id")}")
                         }
                     }

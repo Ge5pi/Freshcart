@@ -75,7 +75,7 @@ class AuthActivity : Activity() {
             val userEmail = email.text.toString().trim()
             val userPassword = password.text.trim().hashCode().toString()
             if (userPassword == "" || userEmail == "") {
-               Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
             } else {
                 auth.signInWithEmailAndPassword(userEmail, userPassword)
                     .addOnCompleteListener(this) { task ->

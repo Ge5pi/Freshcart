@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "385452335775-tmslvq1lvo41o4fsd42lh23pa06g1vi4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.foodresq",
+            "certificate_hash": "b04c33f704f69a38c5b6a6207ed27fcd8929cab4"
+          }
+        },
+        {
           "client_id": "385452335775-ol177c59d337hgcjlkf40g5pgq0u8p6d.apps.googleusercontent.com",
           "client_type": 3
         }
