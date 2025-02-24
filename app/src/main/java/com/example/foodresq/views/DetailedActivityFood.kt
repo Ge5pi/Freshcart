@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -36,6 +37,13 @@ class DetailedActivityFood : Activity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val loading: ImageView = findViewById(R.id.load)
+        loading.setBackgroundResource(R.drawable.loading)
+        val frameAnimation = loading.background as AnimationDrawable
+        loading.post {
+            frameAnimation.start()
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_food)
         auth = Firebase.auth
@@ -46,6 +54,8 @@ class DetailedActivityFood : Activity() {
         val bundle = intent.extras
         val randId = bundle?.getInt("restId")
         Log.d(TAG, "randId in Detailed: $randId")
+
+
 
         var user = User("Error id", "Error login", "Error email", "Error password", rest_id = -1)
         fireDb.collection("users").whereEqualTo("email", current?.email).get()
@@ -79,6 +89,10 @@ class DetailedActivityFood : Activity() {
                         Log.d(TAG, "OUTER BLOCK{ rest: $rest, docRest: rest_id in user: $randId}")
                         updateUI(rest, user)
                     }
+            }.addOnCompleteListener {
+                loading.post {
+                    frameAnimation.stop()
+                }
             }
     }
 
@@ -89,6 +103,20 @@ class DetailedActivityFood : Activity() {
         val desc: TextView = findViewById(R.id.desc)
         val restView: ImageView = findViewById(R.id.rest)
         val priceFooter: TextView = findViewById(R.id.priceFooter)
+
+        val loading: ImageView = findViewById(R.id.load)
+        loading.setBackgroundResource(R.drawable.loading)
+        val frameAnimation = loading.background as AnimationDrawable
+        loading.post {
+            frameAnimation.start()
+        }
+
+        product.visibility = View.GONE
+        name.visibility = View.GONE
+        price.visibility = View.GONE
+        desc.visibility = View.GONE
+        restView.visibility = View.GONE
+        priceFooter.visibility = View.GONE
 
         val bundle = intent.extras
         val prodId = bundle?.getInt("prodId") ?: return
@@ -135,6 +163,17 @@ class DetailedActivityFood : Activity() {
                     }
                 } else {
                     Log.d(TAG, "No docs found")
+                }
+            }.addOnCompleteListener {
+                loading.post{
+                    frameAnimation.stop()
+                    loading.visibility = View.GONE
+                    product.visibility = View.VISIBLE
+                    name.visibility = View.VISIBLE
+                    price.visibility = View.VISIBLE
+                    desc.visibility = View.VISIBLE
+                    restView.visibility = View.VISIBLE
+                    priceFooter.visibility = View.VISIBLE
                 }
             }
 
