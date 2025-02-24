@@ -39,7 +39,9 @@ class DetailedActivityRestaurants : Activity() {
         val loading: ImageView = findViewById(R.id.load)
         loading.setBackgroundResource(R.drawable.loading)
         val frameAnimation = loading.background as AnimationDrawable
-        frameAnimation.start()
+        loading.post {
+            frameAnimation.start()
+        }
 
 
         val restLogo: ImageView = findViewById(R.id.restaurant)
@@ -157,8 +159,6 @@ class DetailedActivityRestaurants : Activity() {
             }.addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting feedback: ", exception)
             }
-
-        frameAnimation.stop()
     }
 }
 

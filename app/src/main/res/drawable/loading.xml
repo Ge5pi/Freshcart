@@ -6,7 +6,7 @@
         android:duration="100" />
     <item
         android:background="@android:color/transparent"
-        android:drawable="@drawable/img_2"
+        android:drawable="@drawable/img_1"
         android:duration="100" />
     <item
         android:background="@android:color/transparent"
