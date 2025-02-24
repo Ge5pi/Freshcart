@@ -21,7 +21,7 @@ import com.example.foodresq.classes.Review
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class DetailedActivityRestaurants : AppCompatActivity() {
+class DetailedActivityRestaurants : Activity() {
     private companion object {
         private const val RC_GOOGLE_SIGN_IN = 4926
         private const val TAG = "DetailedActivityRestaurants"
@@ -36,6 +36,7 @@ class DetailedActivityRestaurants : AppCompatActivity() {
             insets
         }
 
+        
 
 
 
