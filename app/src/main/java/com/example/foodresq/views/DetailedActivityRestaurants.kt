@@ -36,8 +36,10 @@ class DetailedActivityRestaurants : Activity() {
             insets
         }
 
-        
-
+        val loading: ImageView = findViewById(R.id.load)
+        loading.setBackgroundResource(R.drawable.loading)
+        val frameAnimation = loading.background as AnimationDrawable
+        frameAnimation.start()
 
 
         val restLogo: ImageView = findViewById(R.id.restaurant)
