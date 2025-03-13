@@ -38,12 +38,6 @@ class DetailedActivityFood : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-//        //val loading: ImageView = findViewById(R.id.load)
-//        //loading.setBackgroundResource(R.drawable.loading)
-//        //val frameAnimation = loading.background as AnimationDrawable
-//        //loading.post {
-//            frameAnimation.start()
-//        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_food)
         auth = Firebase.auth
@@ -55,7 +49,12 @@ class DetailedActivityFood : Activity() {
         val randId = bundle?.getInt("restId")
         Log.d(TAG, "randId in Detailed: $randId")
 
-
+        val loading: ImageView = findViewById(R.id.load)
+        loading.setBackgroundResource(R.drawable.loading)
+        val frameAnimation = loading.background as AnimationDrawable
+        loading.post {
+            frameAnimation.start()
+        }
 
         var user = User("Error id", "Error login", "Error email", "Error password", rest_id = -1)
         fireDb.collection("users").whereEqualTo("email", current?.email).get()
