@@ -59,7 +59,7 @@
                 android:id="@+id/totalText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="10dp"
                 android:text="Общая сумма:"
                 android:textColor="@color/black"
                 android:textSize="32sp"

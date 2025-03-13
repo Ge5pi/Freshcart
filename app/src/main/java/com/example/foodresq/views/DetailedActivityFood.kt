@@ -56,6 +56,8 @@ class DetailedActivityFood : Activity() {
 
         val loading: ImageView = findViewById(R.id.load)
         loading.setBackgroundResource(R.drawable.loading)
+        val frameAnimation = loading.background as AnimationDrawable
+        loading.post { frameAnimation.start() }
 
 
         var user = User("Error id", "Error login", "Error email", "Error password", rest_id = -1)
