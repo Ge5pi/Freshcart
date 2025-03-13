@@ -89,9 +89,9 @@ class DetailedActivityFood : Activity() {
                         updateUI(rest, user)
                     }
             }.addOnCompleteListener {
-//                loading.post {
-//                    frameAnimation.stop()
-//                }
+                loading.post {
+                    frameAnimation.stop()
+                }
             }
     }
 
