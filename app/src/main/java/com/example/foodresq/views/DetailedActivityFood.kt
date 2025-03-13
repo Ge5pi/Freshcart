@@ -38,12 +38,12 @@ class DetailedActivityFood : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val loading: ImageView = findViewById(R.id.load)
-        loading.setBackgroundResource(R.drawable.loading)
-        val frameAnimation = loading.background as AnimationDrawable
-        loading.post {
-            frameAnimation.start()
-        }
+//        //val loading: ImageView = findViewById(R.id.load)
+//        //loading.setBackgroundResource(R.drawable.loading)
+//        //val frameAnimation = loading.background as AnimationDrawable
+//        //loading.post {
+//            frameAnimation.start()
+//        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_food)
         auth = Firebase.auth
@@ -90,9 +90,9 @@ class DetailedActivityFood : Activity() {
                         updateUI(rest, user)
                     }
             }.addOnCompleteListener {
-                loading.post {
-                    frameAnimation.stop()
-                }
+//                loading.post {
+//                    frameAnimation.stop()
+//                }
             }
     }
 
