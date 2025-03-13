@@ -56,10 +56,7 @@ class DetailedActivityFood : Activity() {
 
         val loading: ImageView = findViewById(R.id.load)
         loading.setBackgroundResource(R.drawable.loading)
-        val frameAnimation = loading.background as AnimationDrawable
-        loading.post {
-            frameAnimation.start()
-        }
+
 
         var user = User("Error id", "Error login", "Error email", "Error password", rest_id = -1)
         fireDb.collection("users").whereEqualTo("email", current?.email).get()
@@ -94,8 +91,9 @@ class DetailedActivityFood : Activity() {
                         updateUI(rest, user)
                     }
             }.addOnCompleteListener {
+                val frameAnimation = loading.background as AnimationDrawable
                 loading.post {
-                    frameAnimation.stop()
+                    frameAnimation.start()
                 }
             }
     }
@@ -112,7 +110,7 @@ class DetailedActivityFood : Activity() {
         loading.setBackgroundResource(R.drawable.loading)
         val frameAnimation = loading.background as AnimationDrawable
         loading.post {
-            frameAnimation.start()
+            frameAnimation.stop()
         }
 
         product.visibility = View.GONE
