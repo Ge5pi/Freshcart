@@ -24,171 +24,231 @@ import com.example.foodresq.classes.Restaurant
 import com.example.foodresq.classes.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 
 class DetailedActivityFood : Activity() {
     private lateinit var auth: FirebaseAuth
+    private lateinit var fireDb: FirebaseFirestore
+    private lateinit var loading: ImageView
+    private lateinit var frameAnimation: AnimationDrawable
+
+    private val views by lazy {
+        Views(
+            product = findViewById(R.id.product),
+            name = findViewById(R.id.name),
+            price = findViewById(R.id.price),
+            desc = findViewById(R.id.desc),
+            restView = findViewById(R.id.rest),
+            priceFooter = findViewById(R.id.priceFooter),
+            delete = findViewById(R.id.delete),
+            backButton = findViewById(R.id.backButton),
+            loading = findViewById(R.id.load)
+        )
+    }
+
+    private data class Views(
+        val product: ImageView,
+        val name: TextView,
+        val price: TextView,
+        val desc: TextView,
+        val restView: ImageView,
+        val priceFooter: TextView,
+        val delete: ImageView,
+        val backButton: ImageView,
+        val loading: ImageView
+    )
 
     companion object {
         private const val TAG = "DetailedActivityFood"
-        private const val RC_GOOGLE_SIGN_IN = 4926
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_food)
+        setupWindowInsets()
+        initializeComponents()
+        loadData()
+    }
+
+    private fun setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    private fun initializeComponents() {
         auth = Firebase.auth
-        val fireDb = Firebase.firestore
+        fireDb = Firebase.firestore
+        setupLoadingAnimation()
+        setupBackButton()
+    }
+
+    private fun setupLoadingAnimation() {
+        with(views.loading) {
+            setBackgroundResource(R.drawable.loading)
+            frameAnimation = background as AnimationDrawable
+            post { frameAnimation.start() }
+        }
+    }
+
+    private fun setupBackButton() {
+        views.backButton.setOnClickListener {
+            startActivity(Intent(this, Home::class.java))
+        }
+    }
+
+    private fun loadData() {
         val current = auth.currentUser
+        val randId = intent.extras?.getInt("restId")
 
-        var rest = Restaurant("Error Id", 0, "Error name", "Error desc", "error logo")
-        val bundle = intent.extras
-        val randId = bundle?.getInt("restId")
-        Log.d(TAG, "randId in Detailed: $randId")
-
-        val loading: ImageView = findViewById(R.id.load)
-        loading.setBackgroundResource(R.drawable.loading)
-        val frameAnimation = loading.background as AnimationDrawable
-        loading.post { frameAnimation.start() }
-
-
-        var user = User("Error id", "Error login", "Error email", "Error password", rest_id = -1)
-        fireDb.collection("users").whereEqualTo("email", current?.email).get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    for (document in documents) {
-                        user = User(
-                            document.id,
-                            document.getString("login") ?: "",
-                            document.getString("email") ?: "",
-                            document.getString("password") ?: "",
-                            rest_id = document.getLong("rest_id")?.toInt() ?: 0
-                        )
-                    }
-                }
-            }.addOnCompleteListener {
-                fireDb.collection("restaurants").whereEqualTo("id", randId).get()
-                    .addOnSuccessListener { documents ->
-                        if (!documents.isEmpty) {
-                            for (document in documents) {
-                                rest = Restaurant(
-                                    document.id,
-                                    document.getLong("id")?.toInt() ?: 0,
-                                    document.getString("name") ?: "",
-                                    document.getString("desc") ?: "",
-                                    document.getString("ava") ?: ""
-                                )
-                                Log.d(TAG, "rest: $rest, RandId: $randId")
-                            }
-                        }
-                        Log.d(TAG, "OUTER BLOCK{ rest: $rest, docRest: rest_id in user: $randId}")
-                        updateUI(rest, user)
-                    }
-            }.addOnCompleteListener {
-                val frameAnimation = loading.background as AnimationDrawable
-                loading.post {
-                    frameAnimation.start()
-                }
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                showLoading()
+                val user = async(Dispatchers.IO) { fetchUser(current?.email) }.await()
+                val restaurant = async(Dispatchers.IO) { fetchRestaurant(randId) }.await()
+                updateUI(restaurant, user)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading data", e)
+                Toast.makeText(this@DetailedActivityFood, "Error loading data", Toast.LENGTH_SHORT).show()
+            } finally {
+                hideLoading()
             }
+        }
+    }
+
+    private suspend fun fetchUser(email: String?): User = withContext(Dispatchers.IO) {
+        val documents = fireDb.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .await()
+
+        documents.documents.firstOrNull()?.let { doc ->
+            User(
+                doc.id,
+                doc.getString("login") ?: "",
+                doc.getString("email") ?: "",
+                doc.getString("password") ?: "",
+                rest_id = doc.getLong("rest_id")?.toInt() ?: -1
+            )
+        } ?: User("Error id", "Error login", "Error email", "Error password", rest_id = -1)
+    }
+
+    private suspend fun fetchRestaurant(randId: Int?): Restaurant = withContext(Dispatchers.IO) {
+        val documents = fireDb.collection("restaurants")
+            .whereEqualTo("id", randId)
+            .get()
+            .await()
+
+        documents.documents.firstOrNull()?.let { doc ->
+            Restaurant(
+                doc.id,
+                doc.getLong("id")?.toInt() ?: 0,
+                doc.getString("name") ?: "",
+                doc.getString("desc") ?: "",
+                doc.getString("ava") ?: ""
+            )
+        } ?: Restaurant("Error Id", 0, "Error name", "Error desc", "error logo")
     }
 
     private fun updateUI(rest: Restaurant, user: User) {
-        val product: ImageView = findViewById(R.id.product)
-        val name: TextView = findViewById(R.id.name)
-        val price: TextView = findViewById(R.id.price)
-        val desc: TextView = findViewById(R.id.desc)
-        val restView: ImageView = findViewById(R.id.rest)
-        val priceFooter: TextView = findViewById(R.id.priceFooter)
+        val prodId = intent.extras?.getInt("prodId") ?: return
 
-        val loading: ImageView = findViewById(R.id.load)
-        loading.setBackgroundResource(R.drawable.loading)
-        val frameAnimation = loading.background as AnimationDrawable
-        loading.post {
-            frameAnimation.stop()
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                showLoading()
+                val product = fetchProduct(prodId)
+                displayProductDetails(product, rest, user)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating UI", e)
+                Toast.makeText(this@DetailedActivityFood, "Error updating UI", Toast.LENGTH_SHORT).show()
+            } finally {
+                hideLoading()
+            }
         }
+    }
 
-        product.visibility = View.GONE
-        name.visibility = View.GONE
-        price.visibility = View.GONE
-        desc.visibility = View.GONE
-        restView.visibility = View.GONE
-        priceFooter.visibility = View.GONE
+    private suspend fun fetchProduct(prodId: Int): Product = withContext(Dispatchers.IO) {
+        val documents = fireDb.collection("positions")
+            .whereEqualTo("id", prodId)
+            .get()
+            .await()
 
-        val bundle = intent.extras
-        val prodId = bundle?.getInt("prodId") ?: return
+        documents.documents.firstOrNull()?.let { doc ->
+            Product(
+                prodId,
+                doc.id,
+                doc.getString("name") ?: "",
+                doc.getString("desc") ?: "",
+                doc.getString("ava") ?: "",
+                doc.getLong("price")?.toInt() ?: 0,
+                getRest(doc.getString("rest_id") ?: ""),
+                doc.getLong("leftovers")?.toInt() ?: 0
+            )
+        } ?: throw Exception("Product not found")
+    }
 
-        val fireDb = Firebase.firestore
-        fireDb.collection("positions").whereEqualTo("id", prodId).get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    val productDetails = documents.map { document ->
-                        Product(
-                            prodId,
-                            document.id,
-                            document.getString("name") ?: "",
-                            document.getString("desc") ?: "",
-                            document.getString("ava") ?: "",
-                            document.getLong("price")?.toInt() ?: 0,
-                            getRest(document.getString("rest_id") ?: ""),
-                            document.getLong("leftovers")?.toInt() ?: 0
-                        )
-                    }.firstOrNull() ?: return@addOnSuccessListener
+    private fun displayProductDetails(product: Product, rest: Restaurant, user: User) {
+        with(views) {
+            Glide.with(this@DetailedActivityFood)
+                .load(product.image)
+                .into(this.product)
 
-                    Glide.with(this)
-                        .load(productDetails.image)
-                        .into(product)
-                    name.text = productDetails.name
-                    price.text = productDetails.price.toString()
-                    desc.text = productDetails.desc
-                    priceFooter.text = productDetails.price.toString()
-                    Log.d(TAG, "rest_id in user: ${user.rest_id}, rest id(Int) in rest: ${rest.id}")
+            name.text = product.name
+            price.text = product.price.toString()
+            desc.text = product.desc
+            priceFooter.text = product.price.toString()
 
-                    Glide.with(this)
-                        .load(rest.logo)
-                        .into(restView)
+            Glide.with(this@DetailedActivityFood)
+                .load(rest.logo)
+                .into(restView)
 
-                    if (user.rest_id == rest.id) {
-                        Log.d(
-                            TAG,
-                            "rest_id in user: ${user.rest_id}, rest id(Int) in rest: ${rest.id}"
-                        )
-                        findViewById<ImageView>(R.id.delete).apply {
-                            visibility = View.VISIBLE
-                            setOnClickListener { showDeleteDialog(productDetails.fact_id) }
-                        }
-                    }
-                } else {
-                    Log.d(TAG, "No docs found")
-                }
-            }.addOnCompleteListener {
-                loading.post{
-                    frameAnimation.stop()
-                    loading.visibility = View.GONE
-                    product.visibility = View.VISIBLE
-                    name.visibility = View.VISIBLE
-                    price.visibility = View.VISIBLE
-                    desc.visibility = View.VISIBLE
-                    restView.visibility = View.VISIBLE
-                    priceFooter.visibility = View.VISIBLE
+            if (user.rest_id == rest.id) {
+                delete.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener { showDeleteDialog(product.fact_id) }
                 }
             }
-
-        findViewById<ImageView>(R.id.backButton).setOnClickListener {
-            startActivity(Intent(this, Home::class.java))
         }
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+    private fun showLoading() {
+        views.loading.visibility = View.VISIBLE
+        frameAnimation.start()
+        hideContentViews()
+    }
+
+    private fun hideLoading() {
+        views.loading.visibility = View.GONE
+        frameAnimation.stop()
+        showContentViews()
+    }
+
+    private fun hideContentViews() {
+        with(views) {
+            product.visibility = View.GONE
+            name.visibility = View.GONE
+            price.visibility = View.GONE
+            desc.visibility = View.GONE
+            restView.visibility = View.GONE
+            priceFooter.visibility = View.GONE
+        }
+    }
+
+    private fun showContentViews() {
+        with(views) {
+            product.visibility = View.VISIBLE
+            name.visibility = View.VISIBLE
+            price.visibility = View.VISIBLE
+            desc.visibility = View.VISIBLE
+            restView.visibility = View.VISIBLE
+            priceFooter.visibility = View.VISIBLE
         }
     }
 
