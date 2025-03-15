@@ -45,7 +45,6 @@ class Profile : Activity() {
         }
         val userMail: TextView = findViewById(R.id.userMail)
         val userLogin: TextView = findViewById(R.id.userLogin)
-        val avatar: ImageView = findViewById(R.id.profileAvatar)
         val sessionManager = SessionManager(this)
         val userEmail = sessionManager.getUserEmail()
         auth = Firebase.auth
@@ -137,33 +136,10 @@ class Profile : Activity() {
 
         val userMail: TextView = findViewById(R.id.userMail)
         val userLogin: TextView = findViewById(R.id.userLogin)
-        val avatar: ImageView = findViewById(R.id.profileAvatar)
         val sessionManager = SessionManager(this)
         val fireDb = Firebase.firestore
         val storage = Firebase.storage
         auth = Firebase.auth
-        val currentFire = auth.currentUser
-
-        fireDb.collection("users").whereEqualTo("email", currentFire?.email).get()
-            .addOnSuccessListener { users ->
-                if (users.isEmpty) {
-                    Log.i(TAG, "PUT IMAGE: USER ERROR")
-                } else {
-                    for (user in users) {
-                        val uriString = user.getString("avatar")
-                        val uri = uriString?.toUri()
-                        Log.d(TAG, "URI: $uri")
-                        if (uri != null) {
-                            Glide.with(this)
-                                .load(uri)
-                                .into(avatar)
-                        }
-                    }
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error fetching user data", e)
-            }
 
         val userEmail = sessionManager.getUserEmail()
         userMail.text = userEmail

@@ -1,53 +1,68 @@
-package com.example.foodresq.adaptersEtc
+package com.example.foodresq.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodresq.R
 import com.example.foodresq.classes.Restaurant
+import com.example.foodresq.views.CartList.Companion.MAIN_ID
 
-class CartNamesAdapter(private val rests: List<Restaurant>, private val context: Context) :
-    RecyclerView.Adapter<CartNamesAdapter.MyViewHolder>() {
+class CartNamesAdapter(
+    private val restaurants: MutableList<Restaurant>,
+    private val context: Context
+) : RecyclerView.Adapter<CartNamesAdapter.ViewHolder>() {
 
-    private var nameListener: OnNameClickListener? = null
+    private var onNameClick: ((Int) -> Unit)? = null
 
-    interface OnNameClickListener {
-        fun onNameClick(id: Int)
+    fun setOnNameClickListener(listener: (Int) -> Unit) {
+        onNameClick = listener
     }
 
-    fun setOnNameClickListener(listener: OnNameClickListener) {
-        nameListener = listener
+    fun updateItems(newItems: List<Restaurant>) {
+        restaurants.clear()
+        restaurants.addAll(newItems)
+        notifyDataSetChanged()
     }
 
-    class MyViewHolder(view: View, listener: OnNameClickListener?) : RecyclerView.ViewHolder(view) {
-        val cartNameText: TextView = view.findViewById(R.id.cartNameRest)
-        var id = 0
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val nameText: TextView = view.findViewById(R.id.cartNameRest)
 
         init {
             view.setOnClickListener {
-                listener?.onNameClick(id)
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onNameClick?.invoke(restaurants[position].id)
+                }
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.name_in_cart, parent, false)
-        return MyViewHolder(view, nameListener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.name_in_cart, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return rests.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val restaurant = restaurants[position]
+
+        with(holder) {
+            nameText.text = restaurant.name
+
+            // Highlight selected restaurant
+            if (MAIN_ID == restaurant.id) {
+                nameText.setTextColor(ContextCompat.getColor(context, R.color.black))
+
+            } else {
+                nameText.setTextColor(ContextCompat.getColor(context, R.color.black))
+
+            }
+        }
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val rest = rests[position]
-        Log.i("CartNamesAdapter", "rest: $rest")
-        holder.cartNameText.text = rest.name
-        holder.id = rest.id
-    }
-
+    override fun getItemCount(): Int = restaurants.size
 }

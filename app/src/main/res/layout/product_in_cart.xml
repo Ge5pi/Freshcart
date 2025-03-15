@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:layout_marginHorizontal="20dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     android:background="@drawable/rounded_corners"
-    android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="8dp">
 
+    <!-- Product Image -->
     <ImageView
         android:id="@+id/cartPicProd"
-        style="@style/CustomProductImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="Product Image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Product Name -->
+    <TextView
+        android:id="@+id/nameInCart"
         android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1.5"
-        android:background="@color/white"
-        app:srcCompat="@drawable/empty_avatar" />
+        android:layout_height="wrap_content"
+        android:text="Product Name"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/deleteCart"
+        app:layout_constraintStart_toEndOf="@id/cartPicProd"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainBlockCart"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="2.8"
-        android:orientation="vertical"
-        android:padding="10dp">
+    <!-- Product Price -->
+    <TextView
+        android:id="@+id/priceInCart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="₸1200"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/deleteCart"
+        app:layout_constraintStart_toEndOf="@id/cartPicProd"
+        app:layout_constraintTop_toBottomOf="@id/nameInCart" />
 
-        <TextView
-            android:id="@+id/nameInCart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <!-- Product Quantity -->
+    <TextView
+        android:id="@+id/quantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Количество: 2"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/deleteCart"
+        app:layout_constraintStart_toEndOf="@id/cartPicProd"
+        app:layout_constraintTop_toBottomOf="@id/priceInCart" />
 
-        <TextView
-            android:id="@+id/priceInCart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameInCart" />
-
-        <TextView
-            android:id="@+id/quantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/priceInCart" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+    <!-- Delete Button -->
     <ImageView
         android:id="@+id/deleteCart"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:src="@drawable/delete"
-        app:srcCompat="@drawable/delete" />
-</LinearLayout>
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="Delete Button"
+        android:src="@drawable/img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

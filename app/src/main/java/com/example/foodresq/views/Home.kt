@@ -29,7 +29,6 @@ import com.example.foodresq.adaptersEtc.RestaurantAdapter
 import com.example.foodresq.adaptersEtc.SearchAdapter
 import com.example.foodresq.classes.Product
 import com.example.foodresq.classes.Restaurant
-import com.example.foodresq.views.CartList.Companion.isRecreate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
@@ -271,13 +270,6 @@ class Home : Activity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        while (isRecreate) {
-            recreate()
-            isRecreate = false
-        }
-    }
 
     private fun setViewsEnabled(enabled: Boolean) {
         val bt = findViewById<RecyclerView>(R.id.bottomList)
