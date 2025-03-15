@@ -33,6 +33,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+
             android:text="Профиль"
             android:textSize="18sp"
             android:background="@drawable/rounded_corners"
@@ -49,31 +50,15 @@
             />
     </LinearLayout>
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/profileAvatar"
-        android:layout_width="150dp"
-        android:layout_marginTop="20dp"
-        android:layout_height="150dp"
-        android:layout_centerInParent="true"
-        android:adjustViewBounds="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topBar"
-        app:shapeAppearanceOverlay="@style/CircleImageView"
-        android:src="@drawable/empty_avatar"
-        tools:srcCompat="@tools:sample/avatars"
-        />
-
     <LinearLayout
         android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
         android:orientation="vertical"
-        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileAvatar">
+        tools:layout_editor_absoluteY="250dp">
 
         <TextView
             android:id="@+id/userMailText"
