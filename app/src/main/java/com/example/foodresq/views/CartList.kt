@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -65,8 +66,15 @@ class CartList : ComponentActivity() {
     }
 
     private fun setupObservers() {
+        val empty = findViewById<LinearLayout>(R.id.emptyState)
         viewModel.cartItems.observe(this) { items ->
-            cartAdapter.updateItems(items)
+            if(items.isNotEmpty()){
+                empty.visibility = View.GONE
+                cartAdapter.updateItems(items)
+            }
+            else{
+                empty.visibility = View.VISIBLE
+            }
         }
 
         viewModel.restaurants.observe(this) { restaurants ->
