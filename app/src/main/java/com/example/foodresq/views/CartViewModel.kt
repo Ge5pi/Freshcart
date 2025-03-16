@@ -1,11 +1,15 @@
 package com.example.foodresq.viewmodels
 
+import android.content.Intent
+import androidx.core.app.ActivityCompat.recreate
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodresq.classes.Product
 import com.example.foodresq.classes.Restaurant
+import com.example.foodresq.views.CartList
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -77,7 +81,6 @@ class CartViewModel : ViewModel() {
                         )
                         products.add(product)
 
-                        // Create Restaurant if not exists
                         val restaurant = Restaurant(
                             restDoc.id,
                             restDoc.getLong("id")?.toInt() ?: 0,
@@ -98,12 +101,12 @@ class CartViewModel : ViewModel() {
                     _selectedRestaurantId.value = restaurants.first().id
                 }
                 updateTotalPrice()
-            } catch (e: Exception) {
-                // Handle error
+            } catch (_: Exception) {
             } finally {
                 _loading.value = false
             }
         }
+
     }
 
     fun setSelectedRestaurant(id: Int) {
@@ -160,6 +163,7 @@ class CartViewModel : ViewModel() {
 
                     // Reload cart
                     loadCart()
+
                 }
             } catch (e: Exception) {
                 // Handle error

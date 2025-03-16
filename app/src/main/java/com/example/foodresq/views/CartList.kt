@@ -3,6 +3,7 @@ package com.example.foodresq.views
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -67,13 +68,24 @@ class CartList : ComponentActivity() {
 
     private fun setupObservers() {
         val empty = findViewById<LinearLayout>(R.id.emptyState)
+        val toCart = findViewById<Button>(R.id.toCart)
+        val totalLabel = findViewById<TextView>(R.id.totalLabel)
+        val total = findViewById<TextView>(R.id.total)
+        val cartRecycle = findViewById<RecyclerView>(R.id.cartRecycle)
         viewModel.cartItems.observe(this) { items ->
             if(items.isNotEmpty()){
                 empty.visibility = View.GONE
                 cartAdapter.updateItems(items)
+                toCart.visibility = View.VISIBLE
+                total.visibility = View.VISIBLE
+                totalLabel.visibility = View.VISIBLE
             }
             else{
                 empty.visibility = View.VISIBLE
+                cartRecycle.visibility = View.GONE
+                toCart.visibility = View.GONE
+                total.visibility = View.GONE
+                totalLabel.visibility = View.GONE
             }
         }
 
