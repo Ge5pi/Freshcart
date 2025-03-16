@@ -87,7 +87,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.android.gms:play-services-auth:12.0.1")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("com.github.bumptech.glide:compiler:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
