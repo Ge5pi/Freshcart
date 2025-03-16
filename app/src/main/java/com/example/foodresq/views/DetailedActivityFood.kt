@@ -2,7 +2,9 @@ package com.example.foodresq.views
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
@@ -12,7 +14,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.ViewCompat
@@ -47,7 +51,8 @@ class DetailedActivityFood : Activity() {
             priceFooter = findViewById(R.id.priceFooter),
             delete = findViewById(R.id.delete),
             backButton = findViewById(R.id.backButton),
-            loading = findViewById(R.id.load)
+            loading = findViewById(R.id.load),
+            toCart = findViewById(R.id.toCart),
         )
     }
 
@@ -60,7 +65,8 @@ class DetailedActivityFood : Activity() {
         val priceFooter: TextView,
         val delete: ImageView,
         val backButton: ImageView,
-        val loading: ImageView
+        val loading: ImageView,
+        val toCart: Button,
     )
 
     companion object {
@@ -205,6 +211,23 @@ class DetailedActivityFood : Activity() {
             desc.text = product.desc
             priceFooter.text = product.price.toString()
 
+            toCart.setOnClickListener {
+                if (product.leftovers > 0) {
+                    showQuantityDialog(
+                        context = this@DetailedActivityFood,
+                        productId = product.id,
+                        fireDb = fireDb,
+                        auth = auth
+                    )
+                } else {
+                    Toast.makeText(
+                        this@DetailedActivityFood,
+                        "Товар закончился",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
             Glide.with(this@DetailedActivityFood)
                 .load(rest.logo)
                 .into(restView)
@@ -328,5 +351,188 @@ class DetailedActivityFood : Activity() {
             restId = it.getLong("id")?.toInt() ?: 0
         }
         return restId
+    }
+
+    private fun showQuantityDialog(
+        context: Context,
+        productId: Int,
+        fireDb: FirebaseFirestore,
+        auth: FirebaseAuth
+    ) {
+        val dialogView =
+            LayoutInflater.from(context).inflate(R.layout.dialog_quantity_selector, null)
+        val editQuantity = dialogView.findViewById<EditText>(R.id.edit_quantity)
+        val buttonIncrease = dialogView.findViewById<ImageView>(R.id.button_increase)
+        val buttonDecrease = dialogView.findViewById<ImageView>(R.id.button_decrease)
+        val buttonAddToCart = dialogView.findViewById<Button>(R.id.button_add_to_cart)
+
+        var productLeft = 0
+
+        fireDb.collection("positions").whereEqualTo("id", productId).get()
+            .addOnSuccessListener { docs ->
+                if (docs.isEmpty) Log.d(TAG, "DIALOG: POSITION RECEIVE ERROR")
+                else {
+                    for (doc in docs) {
+                        productLeft = doc.getLong("leftovers")?.toInt() ?: 0
+                    }
+                }
+            }
+
+        var quantity = editQuantity.text.toString().toInt()
+
+        buttonIncrease.setOnClickListener {
+            if (quantity < productLeft) {
+                quantity++
+                editQuantity.setText(quantity.toString())
+            }
+        }
+
+        buttonDecrease.setOnClickListener {
+            if (quantity > 1) {
+                quantity--
+                editQuantity.setText(quantity.toString())
+            }
+        }
+
+        val dialog = AlertDialog.Builder(context)
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
+        buttonAddToCart.setOnClickListener {
+            val selectedQuantity = editQuantity.text.toString().toInt()
+            fireDb.collection("positions").whereEqualTo("id", productId).get()
+                .addOnSuccessListener { positions ->
+                    if (positions.isEmpty) {
+                        Toast.makeText(
+                            context,
+                            "Error, please try again later",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.d(TAG, "HOME(ADD TO CART): POSITION GET ERROR")
+                    } else {
+                        for (position in positions) {
+                            if (selectedQuantity <= (position.getLong("leftovers")?.toInt() ?: 0)) {
+
+                                val product = "${position.id}:$selectedQuantity"
+
+                                val leftRef = fireDb.collection("positions").document(position.id)
+
+                                leftRef.update(
+                                    "leftovers",
+                                    (position.getLong("leftovers")?.toInt() ?: 0) - selectedQuantity
+                                )
+                                fireDb.collection("users")
+                                    .whereEqualTo("email", auth.currentUser?.email)
+                                    .get()
+                                    .addOnSuccessListener { users ->
+                                        if (users.isEmpty) {
+                                            Log.d(TAG, "HOME(ADD TO CART): USER GET ERROR")
+                                            Toast.makeText(
+                                                context,
+                                                "Error, please try again later",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            for (user in users) {
+                                                val userId = user.id
+                                                val cartRef =
+                                                    fireDb.collection("users").document(userId)
+
+                                                cartRef.get().addOnSuccessListener { document ->
+                                                    val currentCart =
+                                                        document.get("cart") as? List<String>
+                                                            ?: listOf()
+                                                    var updatedCart = currentCart.toMutableList()
+                                                    var itemUpdated = false
+
+                                                    for (i in currentCart.indices) {
+                                                        val cartItem = currentCart[i]
+                                                        val (cartProductId, cartQuantity) = cartItem.split(
+                                                            ":"
+                                                        )
+                                                        if (cartProductId == position.id) {
+                                                            val newQuantity =
+                                                                cartQuantity.toInt() + selectedQuantity
+                                                            updatedCart[i] =
+                                                                "$cartProductId:$newQuantity"
+                                                            itemUpdated = true
+                                                            break
+                                                        }
+                                                    }
+
+                                                    if (!itemUpdated) {
+                                                        updatedCart.add(product)
+                                                    }
+
+                                                    cartRef.update("cart", updatedCart)
+                                                        .addOnSuccessListener {
+                                                            dialog.dismiss()
+                                                            Log.d(
+                                                                TAG,
+                                                                "(ADD TO CART): CART UPDATED SUCCESSFULLY"
+                                                            )
+
+                                                            recreate()
+                                                            Toast.makeText(
+                                                                context,
+                                                                "Product added to cart",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                        .addOnFailureListener { e ->
+                                                            Log.w(
+                                                                TAG,
+                                                                "(ADD TO CART): CART UPDATE FAILED",
+                                                                e
+                                                            )
+                                                            Toast.makeText(
+                                                                context,
+                                                                "Error, please try again later",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.w(TAG, "HOME(ADD TO CART): USER FETCH FAILED", e)
+                                        Toast.makeText(
+                                            context,
+                                            "Error, please try again later",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                            } else if (selectedQuantity > (position.getLong("leftovers")?.toInt()
+                                    ?: 0)
+                            ) {
+                                Toast.makeText(
+                                    this@DetailedActivityFood, "Максимально доступное количество: ${
+                                        position.getLong("leftovers")
+                                            ?.toInt() ?: 0
+                                    }", Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    this@DetailedActivityFood,
+                                    "Добавить в корзину можно как минимум 1 штуку",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "(ADD TO CART): POSITION FETCH FAILED", e)
+                    Toast.makeText(
+                        context,
+                        "Error, please try again later",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+        }
+
+        dialog.show()
     }
 }
