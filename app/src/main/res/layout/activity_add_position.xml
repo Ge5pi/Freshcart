@@ -13,7 +13,6 @@
         android:layout_height="250dp"
         android:scaleType="centerCrop"
         android:src="@drawable/empty_avatar"
-        app:layout_constraintBottom_toBottomOf="biody"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
