@@ -51,20 +51,6 @@ class AddPosition : Activity() {
             val factName = name.text.trim()
             val factPrice = price.text.trim().toString().toInt()
             val factDesc = desc.text.trim()
-//            if(factName!="" && factPrice!= "" && factDesc != ""){
-//                if (rest != null) {
-//                    db.addPosition(
-//                        factName.toString(),
-//                        factDesc.toString(),
-//                        "",
-//                        Integer.parseInt(factPrice.toString()),
-//                    )
-//                }
-//                else{
-//                    Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
-//                }
-//            }
-
             fireDb.collection("users").whereEqualTo("email", currentUser?.email).get()
                 .addOnSuccessListener { documentsUser ->
                     if (documentsUser.isEmpty) {
@@ -111,4 +97,8 @@ class AddPosition : Activity() {
                 }}
         }
     }
+
+
+
+    
 }
