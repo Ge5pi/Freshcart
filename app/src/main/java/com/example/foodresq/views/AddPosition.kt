@@ -27,98 +27,61 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
 class AddPosition : ComponentActivity() {
+    private var selectedImageUri: Uri? = null
+    private lateinit var imagePos: ImageView
+    private lateinit var nameInput: TextView
+    private lateinit var priceInput: TextView
+    private lateinit var descInput: TextView
+    private lateinit var addButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_position)
+
+        setupViews()
+        setupWindowInsets()
+        initializeImageView()
+    }
+
+    private fun setupViews() {
+        imagePos = findViewById(R.id.imagePos)
+        nameInput = findViewById(R.id.name)
+        priceInput = findViewById(R.id.price)
+        descInput = findViewById(R.id.desc)
+        addButton = findViewById(R.id.addPositionButton)
+
+        addButton.setOnClickListener {
+            if (validateInputs()) {
+                addPosition()
+            }
+        }
+    }
+
+    private fun setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
 
-        val name: TextView = findViewById(R.id.name)
-        val price: TextView = findViewById(R.id.price)
-        val desc: TextView = findViewById(R.id.desc)
-        val button: Button = findViewById(R.id.addPositionButton)
-        val fireDb = Firebase.firestore
-        val auth = Firebase.auth
-        val currentUser = auth.currentUser
-        val uid = currentUser?.uid
-        val db = DbHelper(this, null)
-        val sessionManager = SessionManager(this)
-        val userEmail = sessionManager.getUserEmail()
-        val current = userEmail?.let { db.getUserByEmail(it) }
-        val rest: Restaurant? = current?.let { db.getRest(it.rest_id) }
-        val positionCollection = fireDb.collection("positions")
-        var currentRestFactId = ""
-        var currentRestId = 0
-
-        val imagePos = findViewById<ImageView>(R.id.imagePos)
+    private fun initializeImageView() {
         val initialImageUri = "https://firebasestorage.googleapis.com/v0/b/foodresq-bc5d2.appspot.com/o/empty_avatar.png?alt=media&token=246e42a8-8e6b-4fac-9267-2f85568860e9"
         Glide.with(this)
             .load(initialImageUri)
             .into(imagePos)
 
         imagePos.setOnClickListener {
-
-        }
-
-        button.setOnClickListener {
-            val factName = name.text.trim()
-            val factPrice = price.text.trim().toString().toInt()
-            val factDesc = desc.text.trim()
-            fireDb.collection("users").whereEqualTo("email", currentUser?.email).get()
-                .addOnSuccessListener { documentsUser ->
-                    if (documentsUser.isEmpty) {
-                        Log.d("AddPosition", "POCHEMU DOCI PUSTYE")
-                    } else {
-                        for (docUser in documentsUser) {
-                            currentRestId = docUser.getLong("rest_id")?.toInt() ?: 0
-                            Log.d("AddPosition", "user id: ${docUser.id}, rest_id in user: ${docUser.getLong("rest_id")?.toInt() ?: 0}")
-
-                        }
-                    }
-                }.addOnCompleteListener {
-                    fireDb.collection("counters").document("counter_pos").get().addOnSuccessListener { counter ->
-                            val currentPositionId = counter.getLong("current_id")?.toInt() ?: 0
-                            fireDb.collection("restaurants").whereEqualTo("id", currentRestId).get()
-                                .addOnSuccessListener { restDocs ->
-                                    for (doc in restDocs) {
-                                        currentRestFactId = doc.id
-                                        Log.d("AddPosition", "currentRestId in rest: ${doc.id}")
-                                        val dataMap = hashMapOf(
-                                            "id" to currentPositionId + 1,
-                                            "name" to factName.toString(),
-                                            "price" to factPrice,
-                                            "desc" to factDesc.toString(),
-                                            "leftovers" to 10,
-                                            "ava" to "",
-                                            "rest_id" to currentRestFactId,
-                                        )
-                                        positionCollection.add(dataMap)
-                                        fireDb.runTransaction { transaction ->
-                                            val newIdCounter = currentPositionId + 1
-                                            val counterRef = fireDb.collection("counters").document("counter_pos")
-                                            transaction.update(counterRef, "current_id", newIdCounter)
-                                            null
-                                        }
-                                    }
-                                }
-                }.addOnSuccessListener { openGallery() }.addOnSuccessListener {
-                    val intent = Intent(this, Home::class.java)
-                    //intent.putExtra("name", factName.toString())
-                    //intent.putExtra("desc", factDesc.toString())
-                    //intent.putExtra("price", factPrice)
-                    startActivity(intent)
-                }}
+            openGallery()
         }
     }
 
-
-
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        if (uri != null) {
-            uploadImageToFirestore(uri)
+        uri?.let {
+            selectedImageUri = it
+            Glide.with(this)
+                .load(uri)
+                .into(imagePos)
         }
     }
 
@@ -126,39 +89,161 @@ class AddPosition : ComponentActivity() {
         galleryLauncher.launch("image/*")
     }
 
-    private fun uploadImageToFirestore(uri: Uri) {
-        val avatar = findViewById<ImageView>(R.id.imagePos)
+    private fun validateInputs(): Boolean {
+        val name = nameInput.text.toString().trim()
+        val price = priceInput.text.toString().trim()
+        val desc = descInput.text.toString().trim()
+
+        if (name.isEmpty() || price.isEmpty() || desc.isEmpty()) {
+            Toast.makeText(this, "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        try {
+            price.toInt()
+        } catch (e: NumberFormatException) {
+            Toast.makeText(this, "Введите корректную цену", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (selectedImageUri == null) {
+            Toast.makeText(this, "Пожалуйста, выберите изображение", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
+    }
+
+    private fun addPosition() {
+        val fireDb = Firebase.firestore
+        val auth = Firebase.auth
         val storage = Firebase.storage
-        val storageRef = uri.lastPathSegment?.let { storage.reference.child(it) }
-        val uploadTask = storageRef?.putFile(uri)
-        uploadTask?.addOnSuccessListener {
-            storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                Glide.with(this)
-                    .load(downloadUri)
-                    .into(avatar)
-                saveImageToFirestore(downloadUri.toString())
-            }
+        val currentUser = auth.currentUser
+        val sessionManager = SessionManager(this)
+        val db = DbHelper(this, null)
+
+        // Show loading state
+        addButton.isEnabled = false
+        addButton.text = "Добавление..."
+
+        // Generate a unique filename for the image
+        val timestamp = System.currentTimeMillis()
+        val imageFileName = "position_${timestamp}.jpg"
+        val storageRef = storage.reference.child("positions").child(imageFileName)
+
+        selectedImageUri?.let { uri ->
+            storageRef.putFile(uri)
+                .addOnSuccessListener { taskSnapshot ->
+                    storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                        getCurrentRestaurantInfo { currentRestId, currentRestFactId ->
+                            getNextPositionId { currentPositionId ->
+                                savePositionToFirestore(
+                                    currentPositionId = currentPositionId,
+                                    currentRestFactId = currentRestFactId,
+                                    imageUrl = downloadUri.toString()
+                                )
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("AddPosition", "Error uploading image", exception)
+                    Toast.makeText(this, "Ошибка при загрузке изображения", Toast.LENGTH_SHORT).show()
+                    addButton.isEnabled = true
+                    addButton.text = "Добавить"
+                }
         }
     }
 
-    private fun saveImageToFirestore(downloadUri: String) {
-        val bundle = intent.extras
-        val name = bundle?.getString("name")
-        val desc = bundle?.getString("desc")
-        val price = bundle?.getInt("price")
+    private fun getCurrentRestaurantInfo(callback: (Int, String) -> Unit) {
         val fireDb = Firebase.firestore
         val auth = Firebase.auth
-        val current = auth.currentUser
-        fireDb.collection("positions").whereEqualTo("name", name).whereEqualTo("desc", desc)
-            .whereEqualTo("price", price).get().addOnSuccessListener { positions ->
-                if (positions.isEmpty) {
-                    Log.i("AddPosition", "PROFILE EDIT: CANNOT FIND USER")
+        val currentUser = auth.currentUser
+
+        fireDb.collection("users")
+            .whereEqualTo("email", currentUser?.email)
+            .get()
+            .addOnSuccessListener { documentsUser ->
+                if (!documentsUser.isEmpty) {
+                    val currentRestId = documentsUser.documents[0].getLong("rest_id")?.toInt() ?: 0
+
+                    fireDb.collection("restaurants")
+                        .whereEqualTo("id", currentRestId)
+                        .get()
+                        .addOnSuccessListener { restDocs ->
+                            if (!restDocs.isEmpty) {
+                                val currentRestFactId = restDocs.documents[0].id
+                                callback(currentRestId, currentRestFactId)
+                            } else {
+                                handleError("Restaurant not found")
+                            }
+                        }
+                        .addOnFailureListener { handleError(it.message) }
                 } else {
-                    for (pos in positions) {
-                        val userRef = fireDb.collection("positions").document(pos.id)
-                        userRef.update("ava", downloadUri)
-                    }
+                    handleError("User not found")
                 }
             }
+            .addOnFailureListener { handleError(it.message) }
+    }
+
+    private fun getNextPositionId(callback: (Int) -> Unit) {
+        val fireDb = Firebase.firestore
+
+        fireDb.collection("counters")
+            .document("counter_pos")
+            .get()
+            .addOnSuccessListener { counter ->
+                val currentPositionId = counter.getLong("current_id")?.toInt() ?: 0
+                callback(currentPositionId + 1)
+            }
+            .addOnFailureListener { handleError(it.message) }
+    }
+
+    private fun savePositionToFirestore(
+        currentPositionId: Int,
+        currentRestFactId: String,
+        imageUrl: String
+    ) {
+        val fireDb = Firebase.firestore
+        val positionCollection = fireDb.collection("positions")
+
+        val dataMap = hashMapOf(
+            "id" to currentPositionId,
+            "name" to nameInput.text.toString().trim(),
+            "price" to priceInput.text.toString().trim().toInt(),
+            "desc" to descInput.text.toString().trim(),
+            "leftovers" to 10,
+            "ava" to imageUrl,
+            "rest_id" to currentRestFactId
+        )
+
+        positionCollection.add(dataMap)
+            .addOnSuccessListener {
+                updatePositionCounter(currentPositionId)
+                navigateToHome()
+            }
+            .addOnFailureListener { handleError(it.message) }
+    }
+
+    private fun updatePositionCounter(newId: Int) {
+        val fireDb = Firebase.firestore
+
+        fireDb.runTransaction { transaction ->
+            val counterRef = fireDb.collection("counters").document("counter_pos")
+            transaction.update(counterRef, "current_id", newId)
+            null
+        }
+    }
+
+    private fun navigateToHome() {
+        startActivity(Intent(this, Home::class.java))
+        finish()
+    }
+
+    private fun handleError(message: String?) {
+        Log.e("AddPosition", "Error: $message")
+        Toast.makeText(this, "Произошла ошибка. Попробуйте снова.", Toast.LENGTH_SHORT).show()
+        addButton.isEnabled = true
+        addButton.text = "Добавить"
     }
 }
