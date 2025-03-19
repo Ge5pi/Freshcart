@@ -79,7 +79,7 @@ class SearchAdapter(private var foods: List<Product>, private val context: Conte
         } else {
             holder.leftovers.text = "Остаток: ${product.leftovers}"
             holder.name.text = product.name
-            holder.price.text = product.price.toString()
+            holder.price.text =  "₸${product.price}"
             holder.id = product.id
             val initImg = product.image
 

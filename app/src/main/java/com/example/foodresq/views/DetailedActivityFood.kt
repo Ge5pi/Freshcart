@@ -200,6 +200,7 @@ class DetailedActivityFood : Activity() {
         } ?: throw Exception("Product not found")
     }
 
+    @SuppressLint("SetTextI18n")
     private fun displayProductDetails(product: Product, rest: Restaurant, user: User) {
         with(views) {
             Glide.with(this@DetailedActivityFood)
@@ -209,7 +210,7 @@ class DetailedActivityFood : Activity() {
             name.text = product.name
             price.text = product.price.toString()
             desc.text = product.desc
-            priceFooter.text = product.price.toString()
+            priceFooter.text = product.price.toString() + "₸"
 
             toCart.setOnClickListener {
                 if (product.leftovers > 0) {
