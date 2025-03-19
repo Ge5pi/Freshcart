@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -87,6 +88,10 @@ class CartList : ComponentActivity() {
                 total.visibility = View.GONE
                 totalLabel.visibility = View.GONE
             }
+        }
+
+        toCart.setOnClickListener {
+            Toast.makeText(this, "Payment is unavailable now", Toast.LENGTH_LONG).show()
         }
 
         viewModel.restaurants.observe(this) { restaurants ->

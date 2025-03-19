@@ -58,7 +58,7 @@
             android:layout_marginTop="10dp"
             android:ems="10"
             android:hint="price"
-            android:inputType="text" />
+            android:inputType="number" />
 
         <TextView
             android:id="@+id/descText"
@@ -75,6 +75,23 @@
             android:ems="10"
             android:hint="description"
             android:inputType="text" />
+
+
+        <TextView
+            android:id="@+id/quantityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Количество" />
+
+        <EditText
+            android:id="@+id/quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="quantity"
+            android:inputType="number" />
     </LinearLayout>
 
     <Button

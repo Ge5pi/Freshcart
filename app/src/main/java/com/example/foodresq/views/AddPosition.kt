@@ -33,6 +33,7 @@ class AddPosition : ComponentActivity() {
     private lateinit var priceInput: TextView
     private lateinit var descInput: TextView
     private lateinit var addButton: Button
+    private lateinit var quantityInput: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +50,7 @@ class AddPosition : ComponentActivity() {
         priceInput = findViewById(R.id.price)
         descInput = findViewById(R.id.desc)
         addButton = findViewById(R.id.addPositionButton)
+        quantityInput = findViewById(R.id.quantity)
 
         addButton.setOnClickListener {
             if (validateInputs()) {
@@ -212,7 +214,7 @@ class AddPosition : ComponentActivity() {
             "name" to nameInput.text.toString().trim(),
             "price" to priceInput.text.toString().trim().toInt(),
             "desc" to descInput.text.toString().trim(),
-            "leftovers" to 10,
+            "leftovers" to quantityInput.text.toString().trim().toInt(),
             "ava" to imageUrl,
             "rest_id" to currentRestFactId
         )
