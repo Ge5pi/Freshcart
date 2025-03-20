@@ -96,7 +96,6 @@ class AuthActivity : Activity() {
         }
 
         backButton.setOnClickListener {
-            // Handle back button functionality
             finish()
         }
 
@@ -139,12 +138,9 @@ class AuthActivity : Activity() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        //getting user credentials with the help of AuthCredential method and also passing user Token Id.
 
         val credential = GoogleAuthProvider.getCredential(idToken, null)
 
-
-        //trying to sign in user using signInWithCredential and passing above credentials of user.
         auth.signInWithCredential(credential)
             .addOnCompleteListener(
                 this,

@@ -6,8 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.CartList">
-
-    <!-- Back Button -->
     <ImageView
         android:id="@+id/backButton"
         android:layout_width="40dp"
@@ -18,7 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Title -->
     <TextView
         android:id="@+id/cartTitle"
         android:layout_width="wrap_content"
@@ -31,7 +28,6 @@
         app:layout_constraintStart_toEndOf="@id/backButton"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Restaurant Names RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartNameList"
         android:layout_width="0dp"
@@ -42,7 +38,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cartTitle" />
 
-    <!-- Cart Items RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecycle"
         android:layout_width="0dp"
@@ -53,7 +48,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cartNameList" />
 
-    <!-- Total Price Container -->
     <LinearLayout
         android:id="@+id/totalContainer"
         android:layout_width="0dp"
@@ -85,9 +79,6 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-
-
-    <!-- Loading Indicator -->
     <ProgressBar
         android:id="@+id/loadingView"
         android:layout_width="40dp"
@@ -98,7 +89,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Empty State View -->
     <LinearLayout
         android:id="@+id/emptyState"
         android:layout_width="match_parent"

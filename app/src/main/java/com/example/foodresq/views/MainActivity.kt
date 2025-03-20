@@ -43,10 +43,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize SessionManager
         val sessionManager = SessionManager(this)
 
-        // Check login state
         if (sessionManager.isLoggedIn()) {
             val intent = Intent(this, Home::class.java)
             startActivity(intent)
@@ -128,7 +126,6 @@ class MainActivity : ComponentActivity() {
         }
 
         backButton.setOnClickListener {
-            // Handle back button functionality
             finish()
         }
     }
@@ -166,12 +163,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        //getting user credentials with the help of AuthCredential method and also passing user Token Id.
 
         val credential = GoogleAuthProvider.getCredential(idToken, null)
 
 
-        //trying to sign in user using signInWithCredential and passing above credentials of user.
         auth.signInWithCredential(credential)
             .addOnCompleteListener(
                 this,

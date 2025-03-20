@@ -75,7 +75,6 @@ class AddImage : ComponentActivity() {
         val uploadTask = storageRef?.putFile(uri)
         uploadTask?.addOnSuccessListener {
             storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                // Use Glide to load the new image
                 Glide.with(this)
                     .load(downloadUri)
                     .into(avatar)

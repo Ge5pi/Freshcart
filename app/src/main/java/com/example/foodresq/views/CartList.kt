@@ -36,31 +36,26 @@ class CartList : ComponentActivity() {
     }
 
     private fun setupViews() {
-        // Setup Cart RecyclerView
         findViewById<RecyclerView>(R.id.cartRecycle).apply {
             cartAdapter = CartAdapter(mutableListOf(), this@CartList)
             layoutManager = LinearLayoutManager(this@CartList)
             adapter = cartAdapter
         }
 
-        // Setup Restaurant Names RecyclerView
         findViewById<RecyclerView>(R.id.cartNameList).apply {
             restaurantAdapter = CartNamesAdapter(mutableListOf(), this@CartList)
             layoutManager = LinearLayoutManager(this@CartList, LinearLayoutManager.HORIZONTAL, false)
             adapter = restaurantAdapter
         }
 
-        // Setup back button
         findViewById<ImageView>(R.id.backButton).setOnClickListener {
             startActivity(Intent(this@CartList, Home::class.java))
         }
 
-        // Setup delete listener
         cartAdapter.setOnDeleteCartClickListener { position, product ->
             viewModel.removeFromCart(product)
         }
 
-        // Setup restaurant selection listener
         restaurantAdapter.setOnNameClickListener { restaurantId ->
             MAIN_ID = restaurantId
             viewModel.setSelectedRestaurant(restaurantId)

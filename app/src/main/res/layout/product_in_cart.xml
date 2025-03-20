@@ -8,7 +8,6 @@
     android:background="@drawable/rounded_corners"
     android:padding="8dp">
 
-    <!-- Product Image -->
     <ImageView
         android:id="@+id/cartPicProd"
         android:layout_width="80dp"
@@ -18,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Product Name -->
     <TextView
         android:id="@+id/nameInCart"
         android:layout_width="0dp"
@@ -30,7 +28,6 @@
         app:layout_constraintStart_toEndOf="@id/cartPicProd"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Product Price -->
     <TextView
         android:id="@+id/priceInCart"
         android:layout_width="0dp"
@@ -41,7 +38,6 @@
         app:layout_constraintStart_toEndOf="@id/cartPicProd"
         app:layout_constraintTop_toBottomOf="@id/nameInCart" />
 
-    <!-- Product Quantity -->
     <TextView
         android:id="@+id/quantity"
         android:layout_width="0dp"
@@ -52,7 +48,6 @@
         app:layout_constraintStart_toEndOf="@id/cartPicProd"
         app:layout_constraintTop_toBottomOf="@id/priceInCart" />
 
-    <!-- Delete Button -->
     <ImageView
         android:id="@+id/deleteCart"
         android:layout_width="40dp"

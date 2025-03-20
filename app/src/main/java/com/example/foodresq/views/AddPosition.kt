@@ -1,6 +1,5 @@
 package com.example.foodresq.views
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,17 +9,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.foodresq.R
 import com.example.foodresq.adaptersEtc.SessionManager
 import com.example.foodresq.classes.DbHelper
-import com.example.foodresq.classes.Product
-import com.example.foodresq.classes.Restaurant
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -124,11 +119,9 @@ class AddPosition : ComponentActivity() {
         val sessionManager = SessionManager(this)
         val db = DbHelper(this, null)
 
-        // Show loading state
         addButton.isEnabled = false
         addButton.text = "Добавление..."
 
-        // Generate a unique filename for the image
         val timestamp = System.currentTimeMillis()
         val imageFileName = "position_${timestamp}.jpg"
         val storageRef = storage.reference.child("positions").child(imageFileName)

@@ -90,7 +90,6 @@ class ProductAdapter(private var foods: List<Product>, private val context: Cont
 
             Log.d("ProductAdapter", "initImg: $initImg")
 
-            // Use Glide to load the image
             Glide.with(context)
                 .load(initImg)
                 .into(holder.img)

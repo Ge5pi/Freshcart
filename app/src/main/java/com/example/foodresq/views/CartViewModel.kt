@@ -42,8 +42,6 @@ class CartViewModel : ViewModel() {
                 val currentUserEmail = auth.currentUser?.email
                 val products = mutableListOf<Product>()
                 val restaurants = mutableListOf<Restaurant>()
-
-                // Load cart items
                 val userDoc = fireDb.collection("users")
                     .whereEqualTo("email", currentUserEmail)
                     .get()
@@ -53,7 +51,6 @@ class CartViewModel : ViewModel() {
 
                 val cart = userDoc?.get("cart") as? List<String> ?: listOf()
 
-                // Load products and restaurants
                 cart.forEach { cartItem ->
                     val (prodId, quantity) = cartItem.split(":")
                     val productDoc = fireDb.collection("positions")
@@ -68,7 +65,6 @@ class CartViewModel : ViewModel() {
                             .get()
                             .await()
 
-                        // Create Product
                         val product = Product(
                             id = products.size + 1,
                             fact_id = productDoc.id,
@@ -130,7 +126,6 @@ class CartViewModel : ViewModel() {
             try {
                 val currentUserEmail = auth.currentUser?.email
 
-                // Update product leftovers
                 val productDoc = fireDb.collection("positions")
                     .document(product.fact_id)
                     .get()
@@ -144,7 +139,6 @@ class CartViewModel : ViewModel() {
                     .update("leftovers", newLeftovers)
                     .await()
 
-                // Update user's cart
                 val userDoc = fireDb.collection("users")
                     .whereEqualTo("email", currentUserEmail)
                     .get()
@@ -161,12 +155,11 @@ class CartViewModel : ViewModel() {
                         .update("cart", updatedCart)
                         .await()
 
-                    // Reload cart
                     loadCart()
 
                 }
             } catch (e: Exception) {
-                // Handle error
+                TODO("Create exception")
             }
         }
     }

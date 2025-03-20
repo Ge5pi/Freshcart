@@ -161,7 +161,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <!-- Sticky Footer -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"

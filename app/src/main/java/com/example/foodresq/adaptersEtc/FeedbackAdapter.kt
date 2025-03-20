@@ -1,4 +1,3 @@
-// com/example/foodresq/adaptersEtc/FeedbackAdapter.kt
 package com.example.foodresq.adaptersEtc
 
 import android.content.Context

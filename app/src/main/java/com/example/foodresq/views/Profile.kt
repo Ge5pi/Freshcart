@@ -64,29 +64,8 @@ class Profile : Activity() {
         Log.i(TAG, "User credentials: ${current?.displayName}, ${current?.email}")
 
 
-//        if (current != null) {
-//            userLogin.text = current.login
-//        }
-//        else{
-//            userLogin.text = "AAAAAAAAAAAAAAAAAAAA"
-//        }
-//
-//        if(current!=null){
-//            val imageID = resources.getIdentifier(current.avatar, "drawable", packageName)
-//            avatar.setImageResource(imageID)
-//        }
-//        else{
-//            val imageID = resources.getIdentifier("empty_avatar", "drawable", packageName)
-//            avatar.setImageResource(imageID)
-//        }
-
-
         val logoutButton: TextView = findViewById(R.id.buttonLogout)
         logoutButton.setOnClickListener {
-//            sessionManager.clearLoginState()
-//            val intent = Intent(this, AuthActivity::class.java)
-//            startActivity(intent)
-//            finish()
 
             Log.i(TAG, "Logout")
             auth.signOut()

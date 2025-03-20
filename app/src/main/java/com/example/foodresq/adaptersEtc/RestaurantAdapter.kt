@@ -51,11 +51,5 @@ class RestaurantAdapter(val rests: List<Restaurant>, val context: Context) :
         Glide.with(context)
             .load(rests[position].logo)
             .into(holder.img)
-//        val imageId =
-//            context.resources.getIdentifier(rests[position].logo, "drawable", context.packageName)
-//        holder.img.setImageResource(imageId)
-
-
-
     }
 }

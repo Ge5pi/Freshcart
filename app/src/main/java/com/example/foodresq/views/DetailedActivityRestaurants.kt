@@ -42,7 +42,6 @@ class DetailedActivityRestaurants : Activity() {
             insets
         }
 
-        // Setup loading animation
         val loading: ImageView = findViewById(R.id.load)
         loading.setBackgroundResource(R.drawable.loading)
         val frameAnimation = loading.background as AnimationDrawable
@@ -50,39 +49,33 @@ class DetailedActivityRestaurants : Activity() {
             frameAnimation.start()
         }
 
-        // Initialize UI elements
         val restLogo: ImageView = findViewById(R.id.restaurant)
         val restName: TextView = findViewById(R.id.restName)
         val restDesc: TextView = findViewById(R.id.restDesc)
         val feedbackHeader: TextView = findViewById(R.id.feedbackHeader)
 
-        // Set initial visibility
         restDesc.visibility = View.GONE
         restName.visibility = View.GONE
         restLogo.visibility = View.GONE
         feedbackHeader.visibility = View.GONE
 
-        // Get data from intent
         val bundle: Bundle? = intent.extras
         var logoImage = ""
         val restNameBundle = bundle?.getString("restName")
         val desc = bundle?.getString("restDesc")
         val randId = bundle?.getInt("id")
 
-        // Set text values
         restDesc.text = desc
         restName.text = restNameBundle
         val more = findViewById<TextView>(R.id.more)
         more.text = restNameBundle
 
-        // Setup back button
         val backButton: ImageView = findViewById(R.id.backButton)
         backButton.setOnClickListener {
             val intent = Intent(this, Home::class.java)
             startActivity(intent)
         }
 
-        // Setup food list
         val foodList: RecyclerView = findViewById(R.id.foodList)
         foodList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val positionList = mutableListOf<Product>()
@@ -97,14 +90,12 @@ class DetailedActivityRestaurants : Activity() {
             }
         })
 
-        // Setup feedback list
         val reviewList = findViewById<RecyclerView>(R.id.feedbackLayout)
         reviewList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         reviewList.visibility = View.GONE
         adapter = FeedbackAdapter(reviews, this)
         reviewList.adapter = adapter
 
-        // Get restaurant data
         fireDb.collection("restaurants").whereEqualTo("id", randId).get()
             .addOnSuccessListener { restaurants ->
                 if (restaurants.isEmpty) {
@@ -115,12 +106,10 @@ class DetailedActivityRestaurants : Activity() {
                         restId = doc.id
                         logoImage = doc.getString("ava") ?: ""
 
-                        // Load restaurant image
                         Glide.with(this)
                             .load(logoImage)
                             .into(restLogo)
 
-                        // Now that we have restId, load positions and feedback
                         loadPositions(restId, randId, positionList, productAdapter)
                         loadFeedback(restId, feedbackHeader, reviewList)
                     }
@@ -185,22 +174,19 @@ class DetailedActivityRestaurants : Activity() {
                     feedbackHeader.visibility = View.VISIBLE
                     reviewList.visibility = View.VISIBLE
 
-                    reviews.clear() // Clear existing reviews
+                    reviews.clear()
 
                     for (doc in feedDoc) {
                         val rating = doc.getLong("rating")?.toFloat() ?: 0f
                         val text = doc.getString("body") ?: ""
                         val userId = doc.getString("user_id") ?: ""
 
-                        // Add review directly first for immediate display
                         reviews.add(Review(userId, text, rating, restaurantId))
 
-                        // Optionally fetch user name if needed
                         fireDb.collection("users").document(userId).get()
                             .addOnSuccessListener { userDoc ->
                                 val userName = userDoc.getString("name") ?: userId
 
-                                // Find and replace the review with updated user name
                                 val index = reviews.indexOfFirst { it.userId == userId && it.text == text }
                                 if (index != -1) {
                                     reviews[index] = Review(userName, text, rating, restaurantId)
@@ -215,7 +201,6 @@ class DetailedActivityRestaurants : Activity() {
                     adapter.notifyDataSetChanged()
                 }
 
-                // Hide loading after feedback is loaded
                 val loading: ImageView = findViewById(R.id.load)
                 val frameAnimation = loading.background as AnimationDrawable
                 val restDesc: TextView = findViewById(R.id.restDesc)
@@ -227,7 +212,6 @@ class DetailedActivityRestaurants : Activity() {
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting feedback: ", exception)
 
-                // Hide loading even if there's an error
                 val loading: ImageView = findViewById(R.id.load)
                 val frameAnimation = loading.background as AnimationDrawable
                 val restDesc: TextView = findViewById(R.id.restDesc)

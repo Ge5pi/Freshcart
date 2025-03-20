@@ -53,7 +53,6 @@ class CartNamesAdapter(
         with(holder) {
             nameText.text = restaurant.name
 
-            // Highlight selected restaurant
             if (MAIN_ID == restaurant.id) {
                 nameText.setTextColor(ContextCompat.getColor(context, R.color.black))
 
