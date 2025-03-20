@@ -1,3 +1,4 @@
+// com/example/foodresq/adaptersEtc/FeedbackAdapter.kt
 package com.example.foodresq.adaptersEtc
 
 import android.content.Context
@@ -9,40 +10,31 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodresq.R
 import com.example.foodresq.classes.Review
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class FeedbackAdapter(private val reviews: List<Review>, private val context: Context) :
-    RecyclerView.Adapter<FeedbackAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<FeedbackAdapter.ViewHolder>() {
 
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val ratingBar: RatingBar = view.findViewById(R.id.ratingBar)
-        val username: TextView = view.findViewById(R.id.username)
-        val reviewText: TextView = view.findViewById(R.id.reviewText)
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val userName: TextView = itemView.findViewById(R.id.userName)
+        val reviewText: TextView = itemView.findViewById(R.id.reviewText)
+        val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.review_in_list, parent, false)
-        return MyViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.review_in_list, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return reviews.size
-    }
-
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val review = reviews[position]
+
+        holder.userName.text = review.userId
         holder.reviewText.text = review.text
+
+        // Set the rating
         holder.ratingBar.rating = review.rating
-        holder.ratingBar.isEnabled = false
-        val fireDb = Firebase.firestore
-        fireDb.collection("users").document(review.userId).get()
-            .addOnSuccessListener { doc ->
-                holder.username.text = doc.getString("login") ?: "Unknown User"
-            }
-            .addOnFailureListener {
-                holder.username.text = "Unknown User"
-            }
     }
+
+    override fun getItemCount(): Int = reviews.size
 }

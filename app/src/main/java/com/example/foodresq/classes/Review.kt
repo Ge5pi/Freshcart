@@ -1,3 +1,8 @@
 package com.example.foodresq.classes
 
-class Review(val userId: String, val text: String, val rating: Float, val restId: String)
+data class Review(
+    val userId: String,
+    val text: String,
+    val rating: Float,
+    val restaurantId: String
+)
