@@ -109,6 +109,7 @@ class DetailedActivityRestaurants : Activity() {
             .addOnSuccessListener { restaurants ->
                 if (restaurants.isEmpty) {
                     Log.d(TAG, "No restaurant found with id: $randId")
+                    hideLoading(loading, frameAnimation, restDesc, restName, restLogo)
                 } else {
                     for (doc in restaurants) {
                         restId = doc.id
@@ -214,7 +215,7 @@ class DetailedActivityRestaurants : Activity() {
                     adapter.notifyDataSetChanged()
                 }
 
-
+                // Hide loading after feedback is loaded
                 val loading: ImageView = findViewById(R.id.load)
                 val frameAnimation = loading.background as AnimationDrawable
                 val restDesc: TextView = findViewById(R.id.restDesc)

@@ -10,6 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodresq.R
 import com.example.foodresq.classes.Review
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+
+private val fireDb = Firebase.firestore
 
 class FeedbackAdapter(private val reviews: List<Review>, private val context: Context) :
     RecyclerView.Adapter<FeedbackAdapter.ViewHolder>() {
@@ -28,11 +32,12 @@ class FeedbackAdapter(private val reviews: List<Review>, private val context: Co
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val review = reviews[position]
-
-        holder.userName.text = review.userId
+        fireDb.collection("users").document(review.userId).get().addOnSuccessListener {
+            doc -> holder.userName.text = doc.getString("login").toString()
+        }.addOnFailureListener {
+            holder.userName.text = "Unknown User"
+        }
         holder.reviewText.text = review.text
-
-        // Set the rating
         holder.ratingBar.rating = review.rating
     }
 
