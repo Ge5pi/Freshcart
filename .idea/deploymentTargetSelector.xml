@@ -5,9 +5,6 @@
       <SelectionState runConfigName="MainActivity">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="AuthActivity (1)">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="Home">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
@@ -16,7 +13,7 @@
       </SelectionState>
       <SelectionState runConfigName="Unnamed">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-03-20T10:48:58.990651600Z">
+        <DropdownSelection timestamp="2025-03-20T10:35:31.199680200Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Danya\.android\avd\Pixel_7_API_30.avd" />
@@ -24,6 +21,9 @@
           </Target>
         </DropdownSelection>
         <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="DetailedActivityRestaurants">
+        <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
   </component>

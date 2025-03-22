@@ -97,5 +97,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("com.jakewharton.timber:timber:4.7.1")
-
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
+    implementation("com.google.android.material:material:1.9.0")
 }

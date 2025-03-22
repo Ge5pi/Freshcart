@@ -1,13 +1,19 @@
 package com.example.foodresq.views
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,6 +25,8 @@ import com.example.foodresq.adaptersEtc.FeedbackAdapter
 import com.example.foodresq.adaptersEtc.ProductAdapter
 import com.example.foodresq.classes.Product
 import com.example.foodresq.classes.Review
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -31,7 +39,9 @@ class DetailedActivityRestaurants : Activity() {
     private val fireDb = Firebase.firestore
     private lateinit var adapter: FeedbackAdapter
     private val reviews = mutableListOf<Review>()
+    private lateinit var reviewList: RecyclerView
     private var restId = ""
+    private lateinit var feedbackHeader: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +51,10 @@ class DetailedActivityRestaurants : Activity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        findViewById<Button>(R.id.addReview).setOnClickListener {
+            showReviewDialog()
+        }
+
 
         val loading: ImageView = findViewById(R.id.load)
         loading.setBackgroundResource(R.drawable.loading)
@@ -52,7 +66,7 @@ class DetailedActivityRestaurants : Activity() {
         val restLogo: ImageView = findViewById(R.id.restaurant)
         val restName: TextView = findViewById(R.id.restName)
         val restDesc: TextView = findViewById(R.id.restDesc)
-        val feedbackHeader: TextView = findViewById(R.id.feedbackHeader)
+        feedbackHeader = findViewById(R.id.feedbackHeader)
 
         restDesc.visibility = View.GONE
         restName.visibility = View.GONE
@@ -90,7 +104,7 @@ class DetailedActivityRestaurants : Activity() {
             }
         })
 
-        val reviewList = findViewById<RecyclerView>(R.id.feedbackLayout)
+        reviewList = findViewById(R.id.feedbackLayout)
         reviewList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         reviewList.visibility = View.GONE
         adapter = FeedbackAdapter(reviews, this)
@@ -237,5 +251,107 @@ class DetailedActivityRestaurants : Activity() {
             restLogo.visibility = View.VISIBLE
         }
     }
-}
+    private fun showReviewDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_review, null)
+        val ratingBar = dialogView.findViewById<RatingBar>(R.id.ratingBar)
+        val reviewText = dialogView.findViewById<EditText>(R.id.reviewText)
+        val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+        val submitButton = dialogView.findViewById<Button>(R.id.submitButton)
 
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
+        // Настройка кнопки отмены
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        // Настройка кнопки отправки
+        submitButton.setOnClickListener {
+            val rating = ratingBar.rating
+            val review = reviewText.text.toString().trim()
+
+            if (rating == 0f) {
+                Toast.makeText(this, "Пожалуйста, поставьте оценку", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (review.isEmpty()) {
+                Toast.makeText(this, "Пожалуйста, напишите отзыв", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Показываем индикатор загрузки
+            submitButton.isEnabled = false
+            submitButton.text = "Отправка..."
+
+            val auth = Firebase.auth
+            val currentUser = auth.currentUser
+
+            if (currentUser == null) {
+                Toast.makeText(this, "Необходимо авторизоваться", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+                return@setOnClickListener
+            }
+
+// Получаем ID пользователя и только после этого отправляем отзыв
+            fireDb.collection("users")
+                .whereEqualTo("email", currentUser.email)
+                .get()
+                .addOnSuccessListener { docs ->
+                    if (docs.isEmpty) {
+                        Log.d("Detailed", "docs are null")
+                        Toast.makeText(this, "Пользователь не найден", Toast.LENGTH_SHORT).show()
+                        submitButton.isEnabled = true
+                        submitButton.text = "Отправить"
+                    } else {
+                        var userid = ""
+                        for (doc in docs) {
+                            userid = doc.id
+                            break // Берем первый найденный документ
+                        }
+
+                        // Теперь у нас есть userid, можем создать и отправить отзыв
+                        val feedbackData = hashMapOf(
+                            "user_id" to userid,
+                            "rating" to rating.toLong(),
+                            "body" to review,
+                            "rest_id" to restId
+                        )
+
+                        // Отправляем отзыв
+                        fireDb.collection("feedback")
+                            .add(feedbackData)
+                            .addOnSuccessListener {
+                                dialog.dismiss()
+                                Toast.makeText(this, "Спасибо за ваш отзыв!", Toast.LENGTH_SHORT).show()
+
+                                // Обновляем список отзывов
+                                loadFeedback(restId, feedbackHeader, reviewList)
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("Detailed", "Error adding review", e)
+                                Toast.makeText(this, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+
+                                // Восстанавливаем кнопку
+                                submitButton.isEnabled = true
+                                submitButton.text = "Отправить"
+                            }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Detailed", "Error getting user", e)
+                    Toast.makeText(this, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+
+                    // Восстанавливаем кнопку
+                    submitButton.isEnabled = true
+                    submitButton.text = "Отправить"
+                }
+        }
+
+        dialog.show()
+    }
+
+}
