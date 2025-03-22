@@ -20,37 +20,36 @@
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F9F9FA"
             tools:context=".views.DetailedActivityFood">
 
             <ImageView
                 android:id="@+id/load"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#F9F9FA"
+                android:layout_gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/topBar"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topBar"
+                />
 
             <LinearLayout
-                android:paddingHorizontal="20dp"
-                android:layout_marginVertical="10dp"
                 android:id="@+id/topBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/product"
                 android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/backButton"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="0.2"
+                    android:padding="2dp"
                     android:src="@drawable/icon" />
 
                 <TextView
@@ -58,105 +57,141 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#F9F9FA"
                     android:gravity="center"
-                    android:textSize="18sp" />
+                    android:textColor="#212121"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/binTop"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="0.2"
-                    android:contentDescription="Bin Top"
+                    android:padding="2dp"
+                    android:contentDescription="Cart"
                     android:src="@drawable/bin_topper" />
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/product"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
                 android:background="@drawable/rounded_corners"
-                android:scaleType="fitCenter"
-                app:layout_constraintBottom_toTopOf="@id/details"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/topBar"
-                tools:srcCompat="@tools:sample/avatars" />
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:id="@+id/details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_corners"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="20dp"
-                android:padding="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical"
+                android:padding="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/product">
 
                 <TextView
                     android:id="@+id/name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textColor="#212121"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    tools:text="Delicious Food Item" />
 
                 <TextView
                     android:id="@+id/price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/name" />
+                    android:layout_marginTop="8dp"
+                    android:textColor="#4CAF50"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="$12.99" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="12dp"
+                    android:background="#E0E0E0" />
 
                 <TextView
                     android:id="@+id/desc"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
+                    android:textColor="#757575"
                     android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/price" />
+                    android:lineSpacingExtra="4dp"
+                    tools:text="This is a delicious food item with amazing ingredients. It's prepared with care and tastes fantastic." />
 
                 <TextView
                     android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="30dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"
                     android:text="Restaurant"
+                    android:textColor="#212121"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/desc" />
+                    android:textStyle="bold" />
 
+                <LinearLayout
+                    android:id="@+id/randomLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/restaurant_card_background"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:id="@+id/rest"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:scaleType="fitCenter"
+                        android:background="@drawable/circle_background"
+                        tools:srcCompat="@tools:sample/avatars" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/restaurantName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#212121"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:text="Restaurant Name" />
+                    </LinearLayout>
+                </LinearLayout>
                 <ImageView
-                    android:id="@+id/rest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="20dp"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textView6"
-                    tools:srcCompat="@tools:sample/avatars" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:id="@+id/delete"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/delete"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"
+                    app:fabSize="normal"
+                    app:tint="#FFFFFF"
+                    app:backgroundTint="#F44336"
+                    />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/delete"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="end"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
-                android:src="@drawable/delete"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/details"
-                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -167,40 +202,49 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:elevation="8dp"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/priceText"
+        <LinearLayout
+            android:id="@+id/priceContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Price"
-            android:textSize="18sp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/priceFooter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/priceText" />
+            <TextView
+                android:id="@+id/priceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Price"
+                android:textColor="#757575"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/priceFooter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="#212121"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="$12.99" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/toCart"
             style="@style/CustomButton"
             android:layout_width="160dp"
             android:layout_height="54dp"
-            android:layout_marginVertical="10dp"
-            android:layout_marginEnd="20dp"
             android:text="Add to cart"
+            android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

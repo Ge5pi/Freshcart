@@ -79,6 +79,13 @@ class DetailedActivityRestaurants : Activity() {
         val menuText: TextView = findViewById(R.id.textView4)
         feedbackHeader = findViewById(R.id.feedbackHeader)
         val addReview: Button = findViewById(R.id.addReview)
+        val binTop: ImageView = findViewById(R.id.binTop)
+
+
+        binTop.setOnClickListener {
+            val intent = Intent(this, CartList::class.java)
+            startActivity(intent)
+        }
 
         restDesc.visibility = View.GONE
         addReview.visibility = View.GONE

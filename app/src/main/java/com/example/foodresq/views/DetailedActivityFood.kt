@@ -237,6 +237,9 @@ class DetailedActivityFood : Activity() {
                 }
             }
 
+            val rName = findViewById<TextView>(R.id.restaurantName)
+            rName.text = rest.name
+
             Glide.with(this@DetailedActivityFood)
                 .load(rest.logo)
                 .into(restView)
