@@ -18,6 +18,7 @@
 
         <ImageView
             android:id="@+id/img"
+            android:scaleType="fitCenter"
             style="@style/CustomProductImage"
             android:layout_width="0dp"
             android:layout_height="150dp"
@@ -27,6 +28,7 @@
             app:srcCompat="@drawable/empty_avatar" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginStart="20dp"
             android:id="@+id/mainBlockCart"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

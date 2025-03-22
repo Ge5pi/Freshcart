@@ -66,10 +66,14 @@ class DetailedActivityRestaurants : Activity() {
         val restLogo: ImageView = findViewById(R.id.restaurant)
         val restName: TextView = findViewById(R.id.restName)
         val restDesc: TextView = findViewById(R.id.restDesc)
+        val menuText: TextView = findViewById(R.id.textView4)
         feedbackHeader = findViewById(R.id.feedbackHeader)
+        val addReview: Button = findViewById(R.id.addReview)
 
         restDesc.visibility = View.GONE
+        addReview.visibility = View.GONE
         restName.visibility = View.GONE
+        menuText.visibility = View.GONE
         restLogo.visibility = View.GONE
         feedbackHeader.visibility = View.GONE
 
@@ -114,7 +118,7 @@ class DetailedActivityRestaurants : Activity() {
             .addOnSuccessListener { restaurants ->
                 if (restaurants.isEmpty) {
                     Log.d(TAG, "No restaurant found with id: $randId")
-                    hideLoading(loading, frameAnimation, restDesc, restName, restLogo)
+                    hideLoading(loading, frameAnimation, restDesc, restName, restLogo, menuText, addReview)
                 } else {
                     for (doc in restaurants) {
                         restId = doc.id
@@ -131,7 +135,7 @@ class DetailedActivityRestaurants : Activity() {
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting restaurant: ", exception)
-                hideLoading(loading, frameAnimation, restDesc, restName, restLogo)
+                hideLoading(loading, frameAnimation, restDesc, restName, restLogo, menuText, addReview)
             }
     }
 
@@ -220,8 +224,10 @@ class DetailedActivityRestaurants : Activity() {
                 val restDesc: TextView = findViewById(R.id.restDesc)
                 val restName: TextView = findViewById(R.id.restName)
                 val restLogo: ImageView = findViewById(R.id.restaurant)
+                val menuText: TextView = findViewById(R.id.textView4)
+                val addReview: Button = findViewById(R.id.addReview)
 
-                hideLoading(loading, frameAnimation, restDesc, restName, restLogo)
+                hideLoading(loading, frameAnimation, restDesc, restName, restLogo, menuText, addReview)
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting feedback: ", exception)
@@ -231,8 +237,10 @@ class DetailedActivityRestaurants : Activity() {
                 val restDesc: TextView = findViewById(R.id.restDesc)
                 val restName: TextView = findViewById(R.id.restName)
                 val restLogo: ImageView = findViewById(R.id.restaurant)
+                val menuText: TextView = findViewById(R.id.textView4)
+                val addReview: Button = findViewById(R.id.addReview)
 
-                hideLoading(loading, frameAnimation, restDesc, restName, restLogo)
+                hideLoading(loading, frameAnimation, restDesc, restName, restLogo, menuText, addReview)
             }
     }
 
@@ -241,11 +249,15 @@ class DetailedActivityRestaurants : Activity() {
         frameAnimation: AnimationDrawable,
         restDesc: TextView,
         restName: TextView,
-        restLogo: ImageView
+        restLogo: ImageView,
+        menu: TextView,
+        addReview: Button,
     ) {
         loading.post {
             frameAnimation.stop()
             loading.visibility = View.GONE
+            addReview.visibility = View.VISIBLE
+            menu.visibility = View.VISIBLE
             restDesc.visibility = View.VISIBLE
             restName.visibility = View.VISIBLE
             restLogo.visibility = View.VISIBLE
@@ -263,57 +275,52 @@ class DetailedActivityRestaurants : Activity() {
             .setCancelable(true)
             .create()
 
-        // Настройка кнопки отмены
         cancelButton.setOnClickListener {
             dialog.dismiss()
         }
 
-        // Настройка кнопки отправки
         submitButton.setOnClickListener {
             val rating = ratingBar.rating
             val review = reviewText.text.toString().trim()
 
             if (rating == 0f) {
-                Toast.makeText(this, "Пожалуйста, поставьте оценку", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please, leave a rating", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (review.isEmpty()) {
-                Toast.makeText(this, "Пожалуйста, напишите отзыв", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please, write a review", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Показываем индикатор загрузки
             submitButton.isEnabled = false
-            submitButton.text = "Отправка..."
+            submitButton.text = "Sending..."
 
             val auth = Firebase.auth
             val currentUser = auth.currentUser
 
             if (currentUser == null) {
-                Toast.makeText(this, "Необходимо авторизоваться", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Need to authorize", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 return@setOnClickListener
             }
 
-// Получаем ID пользователя и только после этого отправляем отзыв
             fireDb.collection("users")
                 .whereEqualTo("email", currentUser.email)
                 .get()
                 .addOnSuccessListener { docs ->
                     if (docs.isEmpty) {
                         Log.d("Detailed", "docs are null")
-                        Toast.makeText(this, "Пользователь не найден", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show()
                         submitButton.isEnabled = true
-                        submitButton.text = "Отправить"
+                        submitButton.text = "Send"
                     } else {
                         var userid = ""
                         for (doc in docs) {
                             userid = doc.id
-                            break // Берем первый найденный документ
+                            break
                         }
 
-                        // Теперь у нас есть userid, можем создать и отправить отзыв
                         val feedbackData = hashMapOf(
                             "user_id" to userid,
                             "rating" to rating.toLong(),
@@ -321,23 +328,20 @@ class DetailedActivityRestaurants : Activity() {
                             "rest_id" to restId
                         )
 
-                        // Отправляем отзыв
                         fireDb.collection("feedback")
                             .add(feedbackData)
                             .addOnSuccessListener {
                                 dialog.dismiss()
-                                Toast.makeText(this, "Спасибо за ваш отзыв!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Thank you for your review!", Toast.LENGTH_SHORT).show()
 
-                                // Обновляем список отзывов
                                 loadFeedback(restId, feedbackHeader, reviewList)
                             }
                             .addOnFailureListener { e ->
                                 Log.e("Detailed", "Error adding review", e)
-                                Toast.makeText(this, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
 
-                                // Восстанавливаем кнопку
                                 submitButton.isEnabled = true
-                                submitButton.text = "Отправить"
+                                submitButton.text = "Send"
                             }
                     }
                 }
@@ -345,9 +349,8 @@ class DetailedActivityRestaurants : Activity() {
                     Log.e("Detailed", "Error getting user", e)
                     Toast.makeText(this, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
 
-                    // Восстанавливаем кнопку
                     submitButton.isEnabled = true
-                    submitButton.text = "Отправить"
+                    submitButton.text = "Send"
                 }
         }
 

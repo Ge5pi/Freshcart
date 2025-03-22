@@ -8,17 +8,19 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".views.DetailedActivityRestaurants">
 
         <ImageView
             android:id="@+id/load"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/topBar"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/topBar"
+            app:layout_constraintVertical_bias="0.3" />
 
         <LinearLayout
             android:id="@+id/topBar"
@@ -28,6 +30,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
@@ -145,19 +148,20 @@
             android:layout_marginEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/addReview"
             app:layout_constraintTop_toBottomOf="@+id/feedbackHeader" />
 
         <Button
             android:id="@+id/addReview"
             style="@style/CustomButton"
             android:layout_width="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_height="48dp"
-            android:paddingHorizontal="15dp"
             android:layout_margin="15dp"
+            android:paddingHorizontal="15dp"
             android:text="leave a review"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/feedbackLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/feedbackLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="20dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
