@@ -82,7 +82,7 @@ class ProductAdapter(private var foods: List<Product>, private val context: Cont
             holder.itemView.visibility = View.GONE
             holder.itemView.layoutParams = RecyclerView.LayoutParams(0, 0)
         } else {
-            holder.leftovers.text = "Остаток: ${product.leftovers}"
+            holder.leftovers.text = "Quantity: ${product.leftovers}"
             holder.name.text = product.name
             holder.price.text = product.price.toString() + "₸"
             holder.id = product.id

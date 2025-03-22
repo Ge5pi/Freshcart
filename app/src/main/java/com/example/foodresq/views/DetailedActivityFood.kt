@@ -208,7 +208,7 @@ class DetailedActivityFood : Activity() {
                 .into(this.product)
 
             name.text = product.name
-            price.text = product.price.toString()
+            price.text = product.price.toString() + "₸"
             desc.text = product.desc
             priceFooter.text = product.price.toString() + "₸"
 

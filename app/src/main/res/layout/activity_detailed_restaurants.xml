@@ -111,7 +111,7 @@
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Меню"
+                android:text="Menu"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -129,7 +129,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
-            android:text="Отзывы"
+            android:text="Review"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -156,7 +156,7 @@
             android:layout_height="48dp"
             android:paddingHorizontal="15dp"
             android:layout_margin="15dp"
-            android:text="оставить отзыв"
+            android:text="leave a review"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/feedbackLayout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
