@@ -284,6 +284,7 @@ class Home : Activity() {
 
     private fun navigateToRestaurantDetail(position: Int) {
         val intent = Intent(this, DetailedActivityRestaurants::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 
         ioScope.launch {
             try {

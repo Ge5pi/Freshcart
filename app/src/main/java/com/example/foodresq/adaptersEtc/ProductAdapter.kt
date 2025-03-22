@@ -82,7 +82,14 @@ class ProductAdapter(private var foods: List<Product>, private val context: Cont
             holder.itemView.visibility = View.GONE
             holder.itemView.layoutParams = RecyclerView.LayoutParams(0, 0)
         } else {
-            holder.leftovers.text = "Quantity: ${product.leftovers}"
+            // In your adapter's onBindViewHolder method
+            if (product.leftovers <= 3) {
+                holder.leftovers.text = "Only ${product.leftovers} left"
+                holder.leftovers.setBackgroundResource(R.drawable.badge_background_warning)
+            } else {
+                holder.leftovers.text = "${product.leftovers} available"
+                holder.leftovers.setBackgroundResource(R.drawable.badge_background)
+            }
             holder.name.text = product.name
             holder.price.text = product.price.toString() + "₸"
             holder.id = product.id

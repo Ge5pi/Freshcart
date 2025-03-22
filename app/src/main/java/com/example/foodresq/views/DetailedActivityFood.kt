@@ -54,7 +54,9 @@ class DetailedActivityFood : Activity() {
             loading = findViewById(R.id.load),
             toCart = findViewById(R.id.toCart),
             icon = findViewById(R.id.backButton),
-            binTopper = findViewById(R.id.binTopper)
+            binTopper = findViewById(R.id.binTop),
+            rest = findViewById(R.id.textView6),
+            priceText = findViewById(R.id.priceText)
         )
     }
 
@@ -71,6 +73,8 @@ class DetailedActivityFood : Activity() {
         val toCart: Button,
         val binTopper: ImageView,
         val icon: ImageView,
+        val rest: TextView,
+        val priceText: TextView,
     )
 
     companion object {
@@ -268,6 +272,10 @@ class DetailedActivityFood : Activity() {
             priceFooter.visibility = View.GONE
             binTopper.visibility = View.GONE
             icon.visibility = View.GONE
+            toCart.visibility = View.GONE
+            priceText.visibility = View.GONE
+            rest.visibility = View.GONE
+            binTopper.visibility = View.GONE
         }
     }
 
@@ -280,6 +288,10 @@ class DetailedActivityFood : Activity() {
             restView.visibility = View.VISIBLE
             priceFooter.visibility = View.VISIBLE
             icon.visibility = View.VISIBLE
+            binTopper.visibility = View.VISIBLE
+            toCart.visibility = View.VISIBLE
+            priceText.visibility = View.VISIBLE
+            rest.visibility = View.VISIBLE
             binTopper.visibility = View.VISIBLE
         }
     }

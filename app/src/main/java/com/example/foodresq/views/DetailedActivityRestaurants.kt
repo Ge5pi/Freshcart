@@ -2,6 +2,7 @@ package com.example.foodresq.views
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
@@ -26,9 +27,16 @@ import com.example.foodresq.adaptersEtc.ProductAdapter
 import com.example.foodresq.classes.Product
 import com.example.foodresq.classes.Review
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class DetailedActivityRestaurants : Activity() {
     private companion object {
@@ -42,6 +50,8 @@ class DetailedActivityRestaurants : Activity() {
     private lateinit var reviewList: RecyclerView
     private var restId = ""
     private lateinit var feedbackHeader: TextView
+    private val auth = Firebase.auth
+    private val ioScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +115,12 @@ class DetailedActivityRestaurants : Activity() {
                 val intent = Intent(this@DetailedActivityRestaurants, DetailedActivityFood::class.java)
                 intent.putExtra("prodId", id)
                 startActivity(intent)
+            }
+        })
+
+        productAdapter.setOnAddToCartClickListener(object : ProductAdapter.AddToCartClickListener {
+            override fun addToCart(id: Int, toCartButton: Button, inCartButton: Button) {
+                showQuantityDialog(this@DetailedActivityRestaurants, id, fireDb, auth)
             }
         })
 
@@ -356,5 +372,151 @@ class DetailedActivityRestaurants : Activity() {
 
         dialog.show()
     }
+    private fun showQuantityDialog(
+        context: Context,
+        productId: Int,
+        fireDb: FirebaseFirestore,
+        auth: FirebaseAuth
+    ) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_quantity_selector, null)
+        val editQuantity = dialogView.findViewById<EditText>(R.id.edit_quantity)
+        val buttonIncrease = dialogView.findViewById<ImageView>(R.id.button_increase)
+        val buttonDecrease = dialogView.findViewById<ImageView>(R.id.button_decrease)
+        val buttonAddToCart = dialogView.findViewById<Button>(R.id.button_add_to_cart)
 
+        var productLeft = 0
+        var quantity = 1
+        editQuantity.setText(quantity.toString())
+        ioScope.launch {
+            try {
+                val docs = fireDb.collection("positions")
+                    .whereEqualTo("id", productId)
+                    .get()
+                    .await()
+
+                if (docs.isEmpty) {
+                    Log.d(TAG, "DIALOG: POSITION RECEIVE ERROR")
+                    return@launch
+                }
+
+                productLeft = docs.documents[0].getLong("leftovers")?.toInt() ?: 0
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting product leftovers", e)
+            }
+        }
+
+        buttonIncrease.setOnClickListener {
+            if (quantity < productLeft) {
+                quantity++
+                editQuantity.setText(quantity.toString())
+            }
+        }
+
+        buttonDecrease.setOnClickListener {
+            if (quantity > 1) {
+                quantity--
+                editQuantity.setText(quantity.toString())
+            }
+        }
+
+        val dialog = AlertDialog.Builder(context)
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
+        buttonAddToCart.setOnClickListener {
+            val selectedQuantity = editQuantity.text.toString().toIntOrNull() ?: 1
+
+            ioScope.launch {
+                try {
+                    val positions = fireDb.collection("positions")
+                        .whereEqualTo("id", productId)
+                        .get()
+                        .await()
+
+                    if (positions.isEmpty) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Error, please try again later", Toast.LENGTH_SHORT).show()
+                        }
+                        Log.d(TAG, "HOME(ADD TO CART): POSITION GET ERROR")
+                        return@launch
+                    }
+
+                    val position = positions.documents[0]
+                    val positionId = position.id
+                    val leftovers = position.getLong("leftovers")?.toInt() ?: 0
+
+                    if (selectedQuantity <= 0) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Добавить в корзину можно как минимум 1 штуку", Toast.LENGTH_SHORT).show()
+                        }
+                        return@launch
+                    }
+
+                    if (selectedQuantity > leftovers) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Максимально доступное количество: $leftovers", Toast.LENGTH_SHORT).show()
+                        }
+                        return@launch
+                    }
+
+                    fireDb.collection("positions").document(positionId)
+                        .update("leftovers", leftovers - selectedQuantity)
+                        .await()
+
+                    val users = fireDb.collection("users")
+                        .whereEqualTo("email", auth.currentUser?.email)
+                        .get()
+                        .await()
+
+                    if (users.isEmpty) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Error, please try again later", Toast.LENGTH_SHORT).show()
+                        }
+                        Log.d(TAG, "HOME(ADD TO CART): USER GET ERROR")
+                        return@launch
+                    }
+
+                    val userId = users.documents[0].id
+                    val userDoc = fireDb.collection("users").document(userId).get().await()
+
+                    val currentCart = userDoc.get("cart") as? List<String> ?: listOf()
+                    val updatedCart = currentCart.toMutableList()
+                    var itemUpdated = false
+
+                    for (i in currentCart.indices) {
+                        val cartItem = currentCart[i]
+                        val (cartProductId, cartQuantity) = cartItem.split(":")
+                        if (cartProductId == positionId) {
+                            val newQuantity = cartQuantity.toInt() + selectedQuantity
+                            updatedCart[i] = "$cartProductId:$newQuantity"
+                            itemUpdated = true
+                            break
+                        }
+                    }
+
+                    if (!itemUpdated) {
+                        updatedCart.add("$positionId:$selectedQuantity")
+                    }
+
+                    fireDb.collection("users").document(userId)
+                        .update("cart", updatedCart)
+                        .await()
+
+                    withContext(Dispatchers.Main) {
+                        dialog.dismiss()
+                        Toast.makeText(context, "Product added to cart", Toast.LENGTH_SHORT).show()
+                        recreate()
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error adding to cart", e)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Error, please try again later", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+        dialog.show()
+    }
 }
