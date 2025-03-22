@@ -7,7 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".views.AddPosition">
 
+    <TextView
+        android:layout_marginTop="30dp"
+        android:id="@+id/picturetext"
+        android:inputType="text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <ImageView
+        android:layout_marginTop="10dp"
         android:id="@+id/imagePos"
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -15,7 +27,7 @@
         android:src="@drawable/empty_avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/picturetext"
         tools:src="@drawable/empty_avatar" />
 
     <LinearLayout
@@ -30,10 +42,11 @@
 
         <TextView
             android:id="@+id/nameText"
+            android:inputType="text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Название" />
+            android:text="Name" />
 
         <EditText
             android:id="@+id/name"
@@ -49,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Цена" />
+            android:text="Price" />
 
         <EditText
             android:id="@+id/price"
@@ -65,7 +78,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Описание" />
+            android:text="Description"
+            android:inputType="text"/>
 
         <EditText
             android:id="@+id/desc"
@@ -82,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Количество" />
+            android:text="Quantity" />
 
         <EditText
             android:id="@+id/quantity"
@@ -100,7 +114,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_margin="30dp"
-        android:text="Добавить позицию"
+        android:text="Add product"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/body" />
 </androidx.constraintlayout.widget.ConstraintLayout>

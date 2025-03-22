@@ -77,7 +77,7 @@ class SearchAdapter(private var foods: List<Product>, private val context: Conte
             holder.itemView.visibility = View.GONE
             holder.itemView.layoutParams = RecyclerView.LayoutParams(0, 0)
         } else {
-            holder.leftovers.text = "Остаток: ${product.leftovers}"
+            holder.leftovers.text = "Quantity: ${product.leftovers}"
             holder.name.text = product.name
             holder.price.text =  "₸${product.price}"
             holder.id = product.id
