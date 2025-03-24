@@ -16,13 +16,9 @@ import com.google.firebase.ktx.Firebase
 class PriceRecommender(private val context: Context, private val activity: Activity) {
 
     private val firestore = FirebaseFirestore.getInstance()
-    private lateinit var apiKey:String
 
 
     fun recommendPrice(newProductName: String, onResult: (Int?) -> Unit) {
-        val ref = Firebase.firestore.collection("apis").document("apikeygpt").get().addOnSuccessListener {
-            apiKey = it.getString("name").toString()
-        }
         firestore.collection("all_products_in_cart")
             .get()
             .addOnSuccessListener { result ->
@@ -54,68 +50,71 @@ class PriceRecommender(private val context: Context, private val activity: Activ
 
     private fun sendToGPT(prompt: String, onResponse: (String?) -> Unit) {
         val url = "https://api.openai.com/v1/chat/completions"
-        val client = OkHttpClient()
+        Firebase.firestore.collection("apis").document("apikeygpt").get().addOnSuccessListener {
+            val apiKey = it.getString("name").toString()
+            val client = OkHttpClient()
 
-        val messages = JSONArray().apply {
-            put(JSONObject().apply {
-                put("role", "system")
-                put("content", "Ты помощник ресторана, помогающий рекомендовать цену на товар. Отвечай только числом. Учитывай только представленные данные и обращай внимание на одинаковые названия блюд. Смещай цену товара в зависимости от количества. Используй для расчетов формулу расчета рекомендуемой цены, чтобы гарантировать постоянный ответ")
-            })
-            put(JSONObject().apply {
-                put("role", "user")
-                put("content", prompt)
-            })
-        }
-
-        val json = JSONObject().apply {
-            put("model", "gpt-4o")
-            put("messages", messages)
-            put("temperature", 0)
-        }
-
-        val body = RequestBody.create(
-            "application/json".toMediaTypeOrNull(),
-            json.toString()
-        )
-
-        val request = Request.Builder()
-            .url(url)
-            .post(body)
-            .header("Authorization", "Bearer $apiKey")
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e("GPT", "Ошибка запроса: ${e.message}")
-                onResponse(null)
+            val messages = JSONArray().apply {
+                put(JSONObject().apply {
+                    put("role", "system")
+                    put("content", "Ты помощник ресторана, помогающий рекомендовать цену на товар. Отвечай только числом. Учитывай только представленные данные и обращай внимание на одинаковые названия блюд. Смещай цену товара в зависимости от количества. Используй для расчетов формулу расчета рекомендуемой цены, чтобы гарантировать постоянный ответ")
+                })
+                put(JSONObject().apply {
+                    put("role", "user")
+                    put("content", prompt)
+                })
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                if (!response.isSuccessful) {
-                    Log.e("GPT", "Неверный ответ: ${response.code}")
+            val json = JSONObject().apply {
+                put("model", "gpt-4o")
+                put("messages", messages)
+                put("temperature", 0)
+            }
+
+            val body = RequestBody.create(
+                "application/json".toMediaTypeOrNull(),
+                json.toString()
+            )
+
+            val request = Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Authorization", "Bearer $apiKey")
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.e("GPT", "Ошибка запроса: ${e.message}")
                     onResponse(null)
-                    return
                 }
 
-                val responseBody = response.body?.string()
-                try {
-                    val json = JSONObject(responseBody)
-                    val content = json
-                        .getJSONArray("choices")
-                        .getJSONObject(0)
-                        .getJSONObject("message")
-                        .getString("content")
-
-                    activity.runOnUiThread {
-                        onResponse(content.trim())
-                    }
-                } catch (e: Exception) {
-                    Log.e("GPT", "Ошибка парсинга: ${e.message}")
-                    activity.runOnUiThread {
+                override fun onResponse(call: Call, response: Response) {
+                    if (!response.isSuccessful) {
+                        Log.e("GPT", "Неверный ответ: ${response.code}")
                         onResponse(null)
+                        return
+                    }
+
+                    val responseBody = response.body?.string()
+                    try {
+                        val json = JSONObject(responseBody)
+                        val content = json
+                            .getJSONArray("choices")
+                            .getJSONObject(0)
+                            .getJSONObject("message")
+                            .getString("content")
+
+                        activity.runOnUiThread {
+                            onResponse(content.trim())
+                        }
+                    } catch (e: Exception) {
+                        Log.e("GPT", "Ошибка парсинга: ${e.message}")
+                        activity.runOnUiThread {
+                            onResponse(null)
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
     }
 }

@@ -1,134 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".views.AddPosition">
+    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/main"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".views.AddPosition">
+
+<TextView
+    android:id="@+id/picturetext"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:inputType="text"
+    android:text="Picture"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+<ImageView
+    android:id="@+id/imagePos"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_marginTop="10dp"
+    android:scaleType="centerCrop"
+    android:src="@drawable/empty_avatar"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/picturetext"
+    tools:src="@drawable/empty_avatar" />
+
+<LinearLayout
+    android:id="@+id/body"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="30dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/imagePos">
 
     <TextView
-        android:layout_marginTop="30dp"
-        android:id="@+id/picturetext"
+        android:id="@+id/nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:inputType="text"
+        android:text="Name" />
+
+    <EditText
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Picture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <ImageView
         android:layout_marginTop="10dp"
-        android:id="@+id/imagePos"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/empty_avatar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/picturetext"
-        tools:src="@drawable/empty_avatar" />
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="text" />
 
-    <LinearLayout
-        android:id="@+id/body"
+    <TextView
+        android:id="@+id/priceText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imagePos">
+        android:layout_marginTop="20dp"
+        android:text="Price" />
 
-        <TextView
-            android:id="@+id/nameText"
-            android:inputType="text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Name" />
-
-        <EditText
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:ems="10"
-            android:hint="Name"
-            android:inputType="text" />
-
-        <TextView
-            android:id="@+id/priceText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Price" />
-
-        <EditText
-            android:id="@+id/price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:ems="10"
-            android:hint="price"
-            android:inputType="number" />
-
-        <Button
-            android:id="@+id/suggestPriceButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Suggest AI price"
-            style="@style/CustomButton"
-            android:layout_marginStart="8dp"
-            android:paddingHorizontal="20dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toEndOf="@id/price"
-            app:layout_constraintTop_toTopOf="@id/price" />
-
-        <TextView
-            android:id="@+id/descText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Description"
-            android:inputType="text"/>
-
-        <EditText
-            android:id="@+id/desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:ems="10"
-            android:hint="description"
-            android:inputType="text" />
-
-
-        <TextView
-            android:id="@+id/quantityText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Quantity" />
-
-        <EditText
-            android:id="@+id/quantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:ems="10"
-            android:hint="quantity"
-            android:inputType="number" />
-    </LinearLayout>
+    <EditText
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="price"
+        android:inputType="number" />
 
     <Button
-        android:id="@+id/addPositionButton"
+        android:id="@+id/suggestPriceButton"
         style="@style/CustomButton"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_margin="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:paddingHorizontal="20dp"
-        android:text="Add product"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/body" />
+        android:text="Suggest AI price"
+        app:layout_constraintStart_toEndOf="@id/price"
+        app:layout_constraintTop_toTopOf="@id/price" />
+
+    <TextView
+        android:id="@+id/descText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:inputType="text"
+        android:text="Description" />
+
+    <EditText
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="description"
+        android:inputType="text" />
+
+
+    <TextView
+        android:id="@+id/quantityText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Quantity" />
+
+    <EditText
+        android:id="@+id/quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="quantity"
+        android:inputType="number" />
+</LinearLayout>
+
+<Button
+    android:id="@+id/addPositionButton"
+    style="@style/CustomButton"
+    android:layout_width="wrap_content"
+    android:layout_height="48dp"
+
+    android:paddingHorizontal="20dp"
+    android:text="Add product"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/body" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

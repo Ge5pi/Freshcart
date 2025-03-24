@@ -18,6 +18,7 @@ import com.example.foodresq.adaptersEtc.PriceRecommender
 import com.example.foodresq.adaptersEtc.SessionManager
 import com.example.foodresq.classes.DbHelper
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.core.Tag
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -42,20 +43,32 @@ class AddPosition : ComponentActivity() {
         val suggest: Button = findViewById(R.id.suggestPriceButton)
         suggest.setOnClickListener {
             val recommender = PriceRecommender(this, this)
-            recommender.recommendPrice(
-                newProductName = nameInput.text.toString(),
-            ) { recommendedPrice ->
-                if (recommendedPrice != null) {
-                    priceInput.setText(recommendedPrice.toString())
-                    runOnUiThread {
-                        Toast.makeText(this, "Recommended price: $recommendedPrice₸", Toast.LENGTH_SHORT).show()
+            if (nameInput.text.toString() != "") {
+                recommender.recommendPrice(
+                    newProductName = nameInput.text.toString(),
+                ) { recommendedPrice ->
+                    if (recommendedPrice != null) {
                         priceInput.setText(recommendedPrice.toString())
-                    }
-                } else {
-                    runOnUiThread {
-                        Toast.makeText(this, "Could not get price recommendation. Enter name", Toast.LENGTH_SHORT).show()
+                        runOnUiThread {
+                            Toast.makeText(
+                                this,
+                                "Recommended price: $recommendedPrice₸",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            priceInput.setText(recommendedPrice.toString())
+                        }
+                    } else {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this,
+                                "Could not get price recommendation. Enter name",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
+            } else {
+                Toast.makeText(this, "Could not get price. enter name", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -86,7 +99,8 @@ class AddPosition : ComponentActivity() {
     }
 
     private fun initializeImageView() {
-        val initialImageUri = "https://firebasestorage.googleapis.com/v0/b/foodresq-bc5d2.appspot.com/o/empty_avatar.png?alt=media&token=246e42a8-8e6b-4fac-9267-2f85568860e9"
+        val initialImageUri =
+            "https://firebasestorage.googleapis.com/v0/b/foodresq-bc5d2.appspot.com/o/empty_avatar.png?alt=media&token=246e42a8-8e6b-4fac-9267-2f85568860e9"
         Glide.with(this)
             .load(initialImageUri)
             .into(imagePos)
@@ -96,14 +110,15 @@ class AddPosition : ComponentActivity() {
         }
     }
 
-    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let {
-            selectedImageUri = it
-            Glide.with(this)
-                .load(uri)
-                .into(imagePos)
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                selectedImageUri = it
+                Glide.with(this)
+                    .load(uri)
+                    .into(imagePos)
+            }
         }
-    }
 
     private fun openGallery() {
         galleryLauncher.launch("image/*")

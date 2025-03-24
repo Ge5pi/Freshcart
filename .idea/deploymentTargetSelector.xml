@@ -13,10 +13,10 @@
       </SelectionState>
       <SelectionState runConfigName="Unnamed">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-03-23T08:49:33.150551Z">
+        <DropdownSelection timestamp="2025-03-24T02:44:09.971534100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Danya\.android\avd\Pixel_8_API_30.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=L7LZQCYDCUNV4P6D" />
             </handle>
           </Target>
         </DropdownSelection>
