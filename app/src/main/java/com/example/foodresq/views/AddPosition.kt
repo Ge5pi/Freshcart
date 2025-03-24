@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.foodresq.R
+import com.example.foodresq.adaptersEtc.PriceRecommender
 import com.example.foodresq.adaptersEtc.SessionManager
 import com.example.foodresq.classes.DbHelper
 import com.google.firebase.auth.ktx.auth
@@ -37,6 +38,28 @@ class AddPosition : ComponentActivity() {
         setupViews()
         setupWindowInsets()
         initializeImageView()
+
+        val suggest: Button = findViewById(R.id.suggestPriceButton)
+        suggest.setOnClickListener {
+            val recommender = PriceRecommender(this, this)
+            recommender.recommendPrice(
+                newProductName = nameInput.text.toString(),
+            ) { recommendedPrice ->
+                if (recommendedPrice != null) {
+                    priceInput.setText(recommendedPrice.toString()) // Автозаполняем поле цены
+                    runOnUiThread {
+                        Toast.makeText(this, "Рекомендованная цена: $recommendedPrice₸", Toast.LENGTH_SHORT).show()
+                        priceInput.setText(recommendedPrice.toString())
+                    }
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(this, "Не удалось получить рекомендацию цены", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+
     }
 
     private fun setupViews() {

@@ -54,7 +54,6 @@ class Home : Activity() {
     private val restaurantList = mutableListOf<Restaurant>()
     private val fireDb = Firebase.firestore
     private val auth = Firebase.auth
-    private val mainScope = CoroutineScope(Dispatchers.Main)
     private val ioScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -449,6 +448,8 @@ class Home : Activity() {
                     val position = positions.documents[0]
                     val positionId = position.id
                     val leftovers = position.getLong("leftovers")?.toInt() ?: 0
+                    val name = position.getString("name") ?:""
+                    val price = position.getLong("price")?.toInt() ?:0
 
                     if (selectedQuantity <= 0) {
                         withContext(Dispatchers.Main) {
@@ -473,12 +474,35 @@ class Home : Activity() {
                         .get()
                         .await()
 
+                    val all_pos = fireDb.collection("all_products_in_cart").whereEqualTo("name", name)
+                        .whereEqualTo("price", price).get().await()
+
                     if (users.isEmpty) {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Error, please try again later", Toast.LENGTH_SHORT).show()
                         }
                         Log.d(TAG, "HOME(ADD TO CART): USER GET ERROR")
                         return@launch
+                    }
+
+                    if (all_pos.isEmpty){
+                        val newRec = hashMapOf(
+                            "name" to name,
+                            "price" to price,
+                            "quantity" to selectedQuantity
+                        )
+
+                        fireDb.collection("all_products_in_cart").add(newRec)
+                    }
+                    else{
+                        val cur_pos_doc = all_pos.documents[0].id
+                        fireDb.runTransaction{
+                            val ref = fireDb.collection("all_products_in_cart").document(cur_pos_doc)
+                            ref.get().addOnSuccessListener { doc->
+                                val already = doc.getLong("quantity")?.toInt()?:0
+                                it.update(ref, "quantity", already+selectedQuantity)
+                            }
+                        }
                     }
 
                     val userId = users.documents[0].id

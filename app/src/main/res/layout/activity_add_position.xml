@@ -73,6 +73,16 @@
             android:hint="price"
             android:inputType="number" />
 
+        <Button
+            android:id="@+id/suggestPriceButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Предложить цену"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@id/price"
+            app:layout_constraintTop_toTopOf="@id/price" />
+
         <TextView
             android:id="@+id/descText"
             android:layout_width="wrap_content"
