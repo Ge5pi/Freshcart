@@ -2,9 +2,6 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-      <SelectionState runConfigName="MainActivity">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="Home">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
@@ -13,10 +10,10 @@
       </SelectionState>
       <SelectionState runConfigName="Unnamed">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-03-24T02:44:09.971534100Z">
+        <DropdownSelection timestamp="2025-03-24T13:19:08.501362100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=L7LZQCYDCUNV4P6D" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Danya\.android\avd\Pixel_8_API_30.avd" />
             </handle>
           </Target>
         </DropdownSelection>

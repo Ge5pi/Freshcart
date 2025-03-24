@@ -1,5 +1,3 @@
-import com.android.tools.r8.internal.at
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -10,12 +8,21 @@ android {
     namespace = "com.example.foodresq"
     compileSdk = 34
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("C:\\Users\\Danya\\FreshCart.jks")
+            storePassword = "33rjhjds"
+            keyAlias = "key0"
+            keyPassword = "33rjhjds"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.example.foodresq"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -30,6 +37,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
