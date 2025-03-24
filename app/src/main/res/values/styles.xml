@@ -7,6 +7,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">0.15</item>
     </style>
 
     <style name="CustomEditText" parent="Widget.AppCompat.EditText">

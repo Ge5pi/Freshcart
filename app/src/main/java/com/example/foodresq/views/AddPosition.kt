@@ -46,14 +46,14 @@ class AddPosition : ComponentActivity() {
                 newProductName = nameInput.text.toString(),
             ) { recommendedPrice ->
                 if (recommendedPrice != null) {
-                    priceInput.setText(recommendedPrice.toString()) // Автозаполняем поле цены
+                    priceInput.setText(recommendedPrice.toString())
                     runOnUiThread {
-                        Toast.makeText(this, "Рекомендованная цена: $recommendedPrice₸", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Recommended price: $recommendedPrice₸", Toast.LENGTH_SHORT).show()
                         priceInput.setText(recommendedPrice.toString())
                     }
                 } else {
                     runOnUiThread {
-                        Toast.makeText(this, "Не удалось получить рекомендацию цены", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Could not get price recommendation. Enter name", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -115,19 +115,19 @@ class AddPosition : ComponentActivity() {
         val desc = descInput.text.toString().trim()
 
         if (name.isEmpty() || price.isEmpty() || desc.isEmpty()) {
-            Toast.makeText(this, "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
             return false
         }
 
         try {
             price.toInt()
         } catch (e: NumberFormatException) {
-            Toast.makeText(this, "Введите корректную цену", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Enter correct price", Toast.LENGTH_SHORT).show()
             return false
         }
 
         if (selectedImageUri == null) {
-            Toast.makeText(this, "Пожалуйста, выберите изображение", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please, choose image", Toast.LENGTH_SHORT).show()
             return false
         }
 
@@ -143,7 +143,7 @@ class AddPosition : ComponentActivity() {
         val db = DbHelper(this, null)
 
         addButton.isEnabled = false
-        addButton.text = "Добавление..."
+        addButton.text = "Proceeding..."
 
         val timestamp = System.currentTimeMillis()
         val imageFileName = "position_${timestamp}.jpg"
@@ -166,9 +166,9 @@ class AddPosition : ComponentActivity() {
                 }
                 .addOnFailureListener { exception ->
                     Log.e("AddPosition", "Error uploading image", exception)
-                    Toast.makeText(this, "Ошибка при загрузке изображения", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error while uploading image", Toast.LENGTH_SHORT).show()
                     addButton.isEnabled = true
-                    addButton.text = "Добавить"
+                    addButton.text = "Add"
                 }
         }
     }
@@ -260,8 +260,8 @@ class AddPosition : ComponentActivity() {
 
     private fun handleError(message: String?) {
         Log.e("AddPosition", "Error: $message")
-        Toast.makeText(this, "Произошла ошибка. Попробуйте снова.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Error occurred. Try again.", Toast.LENGTH_SHORT).show()
         addButton.isEnabled = true
-        addButton.text = "Добавить"
+        addButton.text = "Add"
     }
 }

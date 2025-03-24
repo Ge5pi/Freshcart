@@ -77,8 +77,10 @@
             android:id="@+id/suggestPriceButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Предложить цену"
+            android:text="Suggest AI price"
+            style="@style/CustomButton"
             android:layout_marginStart="8dp"
+            android:paddingHorizontal="20dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toEndOf="@id/price"
             app:layout_constraintTop_toTopOf="@id/price" />
@@ -121,10 +123,12 @@
     <Button
         android:id="@+id/addPositionButton"
         style="@style/CustomButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_margin="30dp"
+        android:paddingHorizontal="20dp"
         android:text="Add product"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/body" />
 </androidx.constraintlayout.widget.ConstraintLayout>
