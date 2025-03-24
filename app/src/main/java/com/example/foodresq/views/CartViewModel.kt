@@ -1,6 +1,7 @@
 package com.example.foodresq.viewmodels
 
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.ActivityCompat.recreate
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
@@ -126,19 +127,54 @@ class CartViewModel : ViewModel() {
             try {
                 val currentUserEmail = auth.currentUser?.email
 
+                // Получаем текущий документ позиции
                 val productDoc = fireDb.collection("positions")
                     .document(product.fact_id)
                     .get()
                     .await()
 
+                // Обновляем остатки в коллекции positions
                 val currentLeftovers = productDoc.getLong("leftovers")?.toInt() ?: 0
                 val newLeftovers = currentLeftovers + product.leftovers
-
                 fireDb.collection("positions")
                     .document(product.fact_id)
                     .update("leftovers", newLeftovers)
                     .await()
 
+                // Обновляем коллекцию all_products_in_cart
+                val productName = productDoc.getString("name") ?: ""
+                val productPrice = productDoc.getLong("price")?.toInt() ?: 0
+
+                // Ищем продукт в all_products_in_cart по имени и цене
+                val allProductsQuery = fireDb.collection("all_products_in_cart")
+                    .whereEqualTo("name", productName)
+                    .whereEqualTo("price", productPrice)
+                    .get()
+                    .await()
+
+                if (!allProductsQuery.isEmpty) {
+                    val allProductDoc = allProductsQuery.documents.first()
+                    val currentQuantity = allProductDoc.getLong("quantity")?.toInt() ?: 0
+
+                    // Вычитаем количество удаляемых товаров
+                    val newQuantity = currentQuantity - product.leftovers
+
+                    if (newQuantity <= 0) {
+                        // Если количество стало нулевым или отрицательным, удаляем документ
+                        fireDb.collection("all_products_in_cart")
+                            .document(allProductDoc.id)
+                            .delete()
+                            .await()
+                    } else {
+                        // Иначе обновляем количество
+                        fireDb.collection("all_products_in_cart")
+                            .document(allProductDoc.id)
+                            .update("quantity", newQuantity)
+                            .await()
+                    }
+                }
+
+                // Обновляем корзину пользователя
                 val userDoc = fireDb.collection("users")
                     .whereEqualTo("email", currentUserEmail)
                     .get()
@@ -155,11 +191,11 @@ class CartViewModel : ViewModel() {
                         .update("cart", updatedCart)
                         .await()
 
+                    // Перезагружаем корзину после обновления
                     loadCart()
-
                 }
             } catch (e: Exception) {
-                TODO("Create exception")
+                Log.e("CartViewModel", "Error removing item from cart", e)
             }
         }
     }

@@ -483,6 +483,29 @@ class DetailedActivityRestaurants : Activity() {
                         Log.d(TAG, "HOME(ADD TO CART): USER GET ERROR")
                         return@launch
                     }
+                    val name = position.getString("name") ?:""
+                    val price = position.getLong("price")?.toInt() ?:0
+                    val allProductsQuery = fireDb.collection("all_products_in_cart")
+                        .whereEqualTo("name", name)
+                        .whereEqualTo("price", price)
+                        .get()
+                        .await()
+
+                    if (allProductsQuery.isEmpty) {
+                        val newRecord = hashMapOf(
+                            "name" to name,
+                            "price" to price,
+                            "quantity" to selectedQuantity
+                        )
+                        fireDb.collection("all_products_in_cart").add(newRecord).await()
+                    } else {
+                        val docId = allProductsQuery.documents[0].id
+                        val currentQuantity = allProductsQuery.documents[0].getLong("quantity")?.toInt() ?: 0
+
+                        fireDb.collection("all_products_in_cart").document(docId)
+                            .update("quantity", currentQuantity + selectedQuantity)
+                            .await()
+                    }
 
                     val userId = users.documents[0].id
                     val userDoc = fireDb.collection("users").document(userId).get().await()
